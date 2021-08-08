@@ -73,4 +73,24 @@ Future <void> createUser(username,email,password)async{
           }
         }
       }
+
+      Future <void> resetEmail(email)async{
+        try {
+          await  _auth.sendPasswordResetEmail(email: email);
+          services.displayToast(" Reset link has been sent to your email");
+          print("working");
+
+
+        } on Exception catch (e) {
+          print(e.toString());
+          if(e.toString().contains("no user record")){
+            services.displayToast("User not found");
+          }
+
+          if(e.toString().contains("network-request-failed")){
+            services.displayToast("Network problem occured");
+          }
+
+        }
+      }
 }
