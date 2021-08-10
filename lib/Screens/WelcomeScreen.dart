@@ -105,7 +105,7 @@ class RPSCustomPainter extends CustomPainter{
 
 
     Paint paint_0 = new Paint()
-      ..color = Color(0xffa450f8)
+      ..color = Color.fromARGB(255, 69, 22, 99)
       ..style = PaintingStyle.fill
       ..strokeWidth = 1;
 

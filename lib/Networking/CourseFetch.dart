@@ -6,57 +6,69 @@ class CourseFetch{
   List <Map<String,dynamic>> list = [];
   List <Map<String,dynamic>> searchList = [];
   bool state;
+  List <QueryDocumentSnapshot> lister = [];
 
-  Future <List <Map<String,dynamic>>> generalFetch()async{
+  Future <List <QueryDocumentSnapshot>> generalFetch(String user)async{
 
-   await FirebaseFirestore.instance.collection("Admin").get().then((querySnapshot){
-     list.clear();
+   await FirebaseFirestore.instance.collection(user).get().then((querySnapshot){
      querySnapshot.docs.forEach((element) {
-       list.add(element.data());
+       if(element.data()["name"]!= null){
+
+         lister.add(element);
+
+       }
 
      });
 
     });
-   return list;
+   return lister;
   }
 
-  Future <List <Map<String,dynamic>>> popularFetch()async{
+  Future <List <QueryDocumentSnapshot>> popularFetch(String user)async{
 
-    await FirebaseFirestore.instance.collection("Admin").where("category",isEqualTo: "popular").get().then((querySnapshot){
+    await FirebaseFirestore.instance.collection(user).where("category",isEqualTo: "popular").get().then((querySnapshot){
       list.clear();
       querySnapshot.docs.forEach((element) {
-        list.add(element.data());
+        lister.add(element);
 
       });
 
     });
-    return list;
+    return lister;
   }
 
-  Future <List <Map<String,dynamic>>> topFetch()async{
+  Future <List <QueryDocumentSnapshot>> topFetch(String user)async{
 
-    await FirebaseFirestore.instance.collection("Admin").where("category",isEqualTo: "Top").get().then((querySnapshot){
+    await FirebaseFirestore.instance.collection(user).where("category",isEqualTo: "Top").get().then((querySnapshot){
       list.clear();
       querySnapshot.docs.forEach((element) {
-        list.add(element.data());
+        lister.add(element);
 
       });
 
     });
-    return list;
+    return lister;
   }
 
-  Future <List <Map<String,dynamic>>> searchFetch(String search)async{
+  Future <List <QueryDocumentSnapshot>> searchFetch(String user,String search)async{
 
-    await FirebaseFirestore.instance.collection("Admin").get().then((querySnapshot){
-      list.clear();
+    await FirebaseFirestore.instance.collection(user).get().then((querySnapshot){
+
       querySnapshot.docs.forEach((element) {
-        list.add(element.data());
+        if(element.data()["name"]!= null){
+
+          lister.add(element);
+
+        }
 
       });
 
-     list.removeWhere((element) {
-       if(!(element["name"] as String).toLowerCase().contains(search.toLowerCase()))
+     lister.removeWhere((element) {
+       //print(element.data());
+       String data = (element.data()["name"]);
+
+
+       if(!(data.toLowerCase().contains(search.toLowerCase())))
          {
            return true;
          }
@@ -64,9 +76,9 @@ class CourseFetch{
          return false;
        }
      });
-     print(list);
+
 
     });
-    return list;
+    return lister;
   }
 }

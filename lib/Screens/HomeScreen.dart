@@ -1,7 +1,11 @@
-import 'package:courseville/Networking/CourseFetch.dart';
+import 'package:courseville/Networking/Authentication.dart';
 import 'package:courseville/Screens/SearchScreen.dart';
+import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/GridWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../Services.dart';
 
 class  HomeScreen extends StatefulWidget {
 
@@ -9,11 +13,13 @@ class  HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
 
   String searchTerm;
   List <Widget> kTabPages;
   TabController tabController;
+  String  user;
+  String username;
 
   final ktabs = <Tab>[Tab(child: Text("All"),),Tab(child: Text("Popular"),),Tab(child: Text("Top"),),];
 
@@ -27,16 +33,30 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
 
   @override
   void initState() {
- // tabController = TabController(length: ktabs.length, vsync: this);
-
     super.initState();
+    tabController = TabController(length: ktabs.length, vsync: this);
+    Services().getBoolToSF().then((value) {
+      setState(() {
+        user = Provider
+            .of<Data>(context, listen: false)
+            .userInfo
+            ?.uid ?? value[0];
+        username = Provider
+            .of<Data>(context, listen: false)
+            .userInfo
+            ?.displayName ?? value[1];
+
+        Authentication().addUser(user).then((_) => null);
+
+      });
+    });
   }
+
   @override
   Widget build(BuildContext context) {
-
-    kTabPages = <Widget>[Center(child: GridWidget(category: "all",searchTerm: searchTerm,),),
-      Center(child:  GridWidget(category: "popular",searchTerm: searchTerm,),),
-      Center(child: GridWidget(category: "top",searchTerm: searchTerm,),)];
+    kTabPages = <Widget>[Center(child: GridWidget(category: "all",searchTerm: searchTerm,user: user,),),
+      Center(child:  GridWidget(category: "popular",searchTerm: searchTerm,user: user,),),
+      Center(child: GridWidget(category: "top",searchTerm: searchTerm,user: user,),)];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -61,16 +81,10 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                              children: [
                                GestureDetector(
                                  child: Icon(
-                                   Icons.apps_outlined,
+                                   Icons.home_outlined,
                                    color: Colors.white,
                                  ),
-                                 onTap: (){
-                                   setState(() {
-                                        searchTerm = null;
-
-                                   });
-
-                                 },
+                                 onTap: () => Navigator.popAndPushNamed(context,'/hommy'),
                                ),
                                GestureDetector(
                                  onTap: ()async{
@@ -78,10 +92,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                      return SearchScreen();
                                    }));
                                  if(searchName != null){
-                                   print(searchName);
                                    setState(() {
                                      searchTerm = searchName;
-                                     tabController.animateTo(2);
+                                     animate(tabController.index);
                                    });
 
                                  }
@@ -124,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       Expanded(
                         flex: 1,
                         child: TabBar(
+
                           controller: tabController,
                           tabs:ktabs ,
                           labelColor: Colors.white,
@@ -142,10 +156,10 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
               Expanded(
                 child: Container(
                   padding: EdgeInsets.only(top: 20),
-                  child: TabBarView(
+                  child: user!=null?TabBarView(
                     controller: tabController,
                     children: kTabPages,
-                  ),
+                  ):CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 69, 22, 99))),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight:Radius.circular(30))
@@ -159,7 +173,16 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+  animate(int value){
+        switch (value){
+          case 0: tabController.animateTo(2);
+          print(value);
+          break;
+          case 1: tabController.animateTo(0);
+          print(value);
+          break;
+          case 2:tabController.animateTo(1);
+          print(value);
+        }
+  }
 }

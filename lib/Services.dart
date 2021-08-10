@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Services{
 
@@ -15,4 +16,11 @@ class Services{
     );
 
   }
+   Future <List<String>> getBoolToSF()async{
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+     List <String> boolvalue = preferences.getStringList("UID");
+     return boolvalue;
+
+   }
+
 }

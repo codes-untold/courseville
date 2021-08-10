@@ -1,8 +1,10 @@
 import 'package:courseville/Networking/Authentication.dart';
+import 'package:courseville/Screens/HomeScreen.dart';
 import 'package:courseville/Screens/RegistrationScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ForgotScreen.dart';
 
@@ -249,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
       loading = true;
     });
 
-    await Authentication().loginUser(email, password).then((value){
+    await Authentication().loginUser(email, password,context).then((value){
       setState(() {
         loading = false;
       });
@@ -291,5 +293,13 @@ class RPSCustomPainter2 extends CustomPainter{
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
+
+}
+
+addBoolToSF(_auth)async{
+  List <String> list = [_auth.currentUser.uid,_auth.currentUser.displayName];
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  preferences.setStringList("UID", list);
+  preferences.setBool("boolvalue", true);
 
 }
