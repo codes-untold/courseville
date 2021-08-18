@@ -10,6 +10,7 @@ class Data extends ChangeNotifier{
   String auth;
   User userInfo;
   String searchTerm;
+  List <bool> favourite;
 
 
   void updateText(String text){
@@ -26,4 +27,15 @@ void updateSearch(String search){
     searchTerm = search;
     notifyListeners();
 }
+
+  void addFavouriteList(List fav){
+    favourite = fav;
+    notifyListeners();
+
+  }
+
+  void UpdateFavouriteList(int index,bool value){
+    favourite[index] = value;
+    notifyListeners();
+  }
 }

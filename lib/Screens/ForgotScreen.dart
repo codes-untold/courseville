@@ -3,6 +3,7 @@ import 'package:courseville/Screens/RegistrationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
+import '../CustomPainter.dart';
 import 'LoginScreen.dart';
 import 'WelcomeScreen.dart';
 

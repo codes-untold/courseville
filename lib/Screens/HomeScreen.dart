@@ -34,18 +34,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    var userData = Provider.of<Data>(context, listen: false);
     tabController = TabController(length: ktabs.length, vsync: this);
     Services().getBoolToSF().then((value) {
       setState(() {
-        user = Provider
-            .of<Data>(context, listen: false)
-            .userInfo
-            ?.uid ?? value[0];
-        username = Provider
-            .of<Data>(context, listen: false)
-            .userInfo
-            ?.displayName ?? value[1];
-
+        user = userData?.userInfo?.uid ?? value[0];
+        username = userData?.userInfo?.displayName ?? value[1];
         Authentication().addUser(user).then((_) => null);
 
       });
@@ -54,9 +48,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    kTabPages = <Widget>[Center(child: GridWidget(category: "all",searchTerm: searchTerm,user: user,),),
-      Center(child:  GridWidget(category: "popular",searchTerm: searchTerm,user: user,),),
-      Center(child: GridWidget(category: "top",searchTerm: searchTerm,user: user,),)];
+    kTabPages = <Widget>[Center(child: GridWidget(category: "all",searchTerm: searchTerm,user: user,contextt: context,),),
+      Center(child:  GridWidget(category: "popular",searchTerm: searchTerm,user: user,contextt: context,),),
+      Center(child: GridWidget(category: "top",searchTerm: searchTerm,user: user,contextt: context,),)];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -81,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                              children: [
                                GestureDetector(
                                  child: Icon(
-                                   Icons.home_outlined,
+                                   Icons.apps_outlined,
                                    color: Colors.white,
                                  ),
                                  onTap: () => Navigator.popAndPushNamed(context,'/hommy'),
@@ -141,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           controller: tabController,
                           tabs:ktabs ,
                           labelColor: Colors.white,
-                          indicatorColor: Colors.amberAccent,
+                          indicatorColor: Colors.white,
                           indicatorSize: TabBarIndicatorSize.label,
                           labelStyle: TextStyle(
                             //   fontSize: 16
