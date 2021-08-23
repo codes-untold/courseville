@@ -1,3 +1,4 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Constants.dart';
@@ -7,13 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../Services.dart';
+import 'CourseVideoScreen.dart';
 
 class CourseScreen extends StatefulWidget {
   QueryDocumentSnapshot queryDocumentSnapshot;
   String user;
-  int index;
+  int courseScreenIndex;
 
-  CourseScreen({this.queryDocumentSnapshot,this.user,this.index});
+  CourseScreen({this.queryDocumentSnapshot,this.user,this.courseScreenIndex});
 
   @override
   _CourseScreenState createState() => _CourseScreenState();
@@ -21,7 +23,7 @@ class CourseScreen extends StatefulWidget {
 
 class _CourseScreenState extends State<CourseScreen> {
   double WIDTH = 200;
-
+  List <Widget> list = [];
   Color color;
 
 
@@ -29,13 +31,21 @@ class _CourseScreenState extends State<CourseScreen> {
   void initState() {
     super.initState();
     print(widget.queryDocumentSnapshot.data()["coursevideo"]);
+
+
+    for(Map<String,dynamic> lister in (widget.queryDocumentSnapshot.data()["coursevideo"] as List)){
+      int i = 0;
+      list?.add(CourselistTile(i: i,list: lister,queryDocumentSnapshot: widget.queryDocumentSnapshot,));
+      i++;
+    }
+
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     var providerData = Provider.of<Data>(context,listen: false);
-    if(providerData.favourite[widget.index]){
+    if(providerData.favourite[widget.courseScreenIndex]){
     color = Colors.amber;
     }
     else{
@@ -132,22 +142,19 @@ class _CourseScreenState extends State<CourseScreen> {
                       SizedBox(height: 15,),
 
 
-                      ListView.builder(
-                        shrinkWrap: true,
-                          itemCount: (widget.queryDocumentSnapshot.data()["coursevideo"] as List)?.length,
-                          itemBuilder: (context,i){
-                        return CourselistTile(queryDocumentSnapshot: widget.queryDocumentSnapshot,i: i,);
-                      }),
-
+                     Column(
+                        children: list
+                      ),
 
                       SizedBox(height: 15,),
 
-
                       GestureDetector(
                         onTap: (){
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                            return CourseScreen(queryDocumentSnapshot:widget.queryDocumentSnapshot,
-                              user: widget.user,index:widget.index);
+                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return CourseVideoScreen(
+                              queryDocumentSnapshot: widget.queryDocumentSnapshot,
+                              i: widget.courseScreenIndex,
+                            );
                           }));
                         },
                         child: Container(
@@ -176,13 +183,12 @@ class _CourseScreenState extends State<CourseScreen> {
         )
       ),
    floatingActionButton: Consumer<Data>(
-     builder: (context,data,child){
+     builder: (context,data,_){
        return FloatingActionButton(
          onPressed: ()async{
-           var providerData = Provider.of<Data>(context,listen: false);
-           if(data.favourite[widget.index]){
+           if(data.favourite[widget.courseScreenIndex]){
              color = Colors.white;
-             providerData.UpdateFavouriteList(widget.index, false);
+             data.UpdateFavouriteList(widget.courseScreenIndex, false);
              Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Removed from Favourites•☹️",context);
              await FirebaseFirestore.instance.collection(
                  widget.user).doc(
@@ -192,7 +198,7 @@ class _CourseScreenState extends State<CourseScreen> {
 
            else{
              color = Colors.amber;
-             providerData.UpdateFavouriteList(widget.index, true);
+             data.UpdateFavouriteList(widget.courseScreenIndex, true);
              Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Added to Favourites😀",context);
              await FirebaseFirestore.instance.collection(
                  widget.user).doc(

@@ -35,6 +35,7 @@ class CourseFetch{
 
     await FirebaseFirestore.instance.collection(user).where("category",isEqualTo: "popular").get().then((querySnapshot){
       list.clear();
+
       querySnapshot.docs.forEach((element) {
         lister.add(element);
         favList.add(element.data()["favourite"]);

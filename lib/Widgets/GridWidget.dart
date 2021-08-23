@@ -83,7 +83,7 @@ class _GridWidgetState extends State<GridWidget> {
     return list.isEmpty?widget.searchTerm != null? OopsWidget():
     CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 69, 22, 99))): GridView.count(crossAxisCount: 2,
     children: List.generate(list.length, (index){
-      return CourseCard(querySnapshot: list[index],user: widget.user,index: index,);
+      return CourseCard(querySnapshot: list[index],user: widget.user,cardindex: index,);
     }),);
   }
 }

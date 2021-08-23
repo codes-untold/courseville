@@ -12,8 +12,8 @@ class CourseIntro extends StatelessWidget {
   double WIDTH = 200;
   QueryDocumentSnapshot queryDocumentSnapshot;
   String user;
-  int index;
-  CourseIntro({this.queryDocumentSnapshot,this.user,this.index});
+  int courseindex;
+  CourseIntro({this.queryDocumentSnapshot,this.user,this.courseindex});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class CourseIntro extends StatelessWidget {
              GestureDetector(
                onTap: (){
                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                   return CourseScreen(queryDocumentSnapshot: queryDocumentSnapshot,user: user,index:index ,);
+                   return CourseScreen(queryDocumentSnapshot: queryDocumentSnapshot,user: user,courseScreenIndex: courseindex,);
                  }));
                },
                child: Container(

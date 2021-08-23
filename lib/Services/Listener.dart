@@ -11,10 +11,13 @@ class Data extends ChangeNotifier{
   User userInfo;
   String searchTerm;
   List <bool> favourite;
+  //List<List<String>> videoID;
+  int videoID =0;
 
 
   void updateText(String text){
     auth = text;
+
     notifyListeners();
   }
 
@@ -36,6 +39,11 @@ void updateSearch(String search){
 
   void UpdateFavouriteList(int index,bool value){
     favourite[index] = value;
+    notifyListeners();
+  }
+
+  void updateCurrentVideoID(int value){
+    videoID = value;
     notifyListeners();
   }
 }
