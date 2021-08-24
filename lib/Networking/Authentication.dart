@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Screens/HomeScreen.dart';
 import 'package:courseville/Screens/LoginScreen.dart';
+import 'package:courseville/Screens/NavigationScreen.dart';
 import 'package:courseville/Services.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,7 +67,7 @@ Future <void> createUser(username,email,password)async{
               print(_auth.currentUser.uid);
               Provider.of<Data>(context,listen: false).updateUser(_auth.currentUser);
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                return HomeScreen();
+                return NavigationScreen();
               }));
 
               services.displayToast("Email  verified");

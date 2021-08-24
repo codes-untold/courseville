@@ -13,8 +13,9 @@ class CourseCard extends StatefulWidget {
   final QueryDocumentSnapshot querySnapshot;
   String user;
   int cardindex;
+  int totalCards;
 
-  CourseCard({@required this.querySnapshot,this.user,this.cardindex});
+  CourseCard({@required this.querySnapshot,this.user,this.cardindex,this.totalCards});
 
   @override
   _CourseCardState createState() => _CourseCardState();
@@ -100,7 +101,7 @@ class _CourseCardState extends State<CourseCard> {
                      onTap: work,
                      child: Consumer<Data>(
                        builder:(context,data,child){
-                         return Icon(data.favourite[widget.cardindex] != null ?
+                         return Icon(!(data.favourite.length < widget.totalCards)?
                          data.favourite[widget.cardindex]? Icons.favorite_rounded: Icons.favorite_border_rounded:Icons.favorite_border_rounded,
                              color: Color(0xffa450f8));
                        },

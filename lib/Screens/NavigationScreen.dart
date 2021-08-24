@@ -27,9 +27,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
     return Scaffold(
       body: SafeArea(child: widgets[selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
-        //       backgroundColor: Colors.white,
+        backgroundColor: Colors.red,
         items: const <BottomNavigationBarItem>
-        [BottomNavigationBarItem(icon: Icon(Icons.home,size: 20.0,),label: "home"),
+        [BottomNavigationBarItem(icon: Icon(Icons.home,size: 20.0,),label: "home",backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.favorite,size: 20.0,),label: "favourite"),
           BottomNavigationBarItem(icon: Icon(Icons.notifications,size: 20.0,),label: "notification"),
           BottomNavigationBarItem(icon: Icon(Icons.person_sharp,size: 20.0,),label: "profile")],

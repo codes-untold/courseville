@@ -38,7 +38,7 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
     widget.queryDocumentSnapshot.data()
     ["coursevideo"][Provider.of<Data>(context,listen: false).videoID]["videoid"],
         flags: YoutubePlayerFlags(autoPlay: true,
-          forceHD: false
+          forceHD: true
         ))..addListener(() {
           if(_isPlayerReady == true){
            playerState =  youtubePlayerController.value.playerState;

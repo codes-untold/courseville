@@ -2,6 +2,7 @@
 import 'package:courseville/Screens/CourseVideoScreen.dart';
 import 'package:courseville/Screens/LoginScreen.dart';
 import 'package:courseville/Screens/NavigationScreen.dart';
+import 'package:courseville/TestWidget.dart';
 import 'package:courseville/Widgets/videoScreenListTile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +26,10 @@ Future <void> main()async {
         "/hommy":(context) => HomeScreen(),
         "/fommy":(context) => CourseVideoScreen()
       },
-      home: await getBoolToSF()? NavigationScreen(): WelcomeScreen(),
-      //home: VideoScreenListTile(),
+     home: await getBoolToSF()? NavigationScreen(): WelcomeScreen(),
+     // home:  WelcomeScreen(),
+      //home: TestWidget(),
+
 
       debugShowCheckedModeBanner: false,
     ),
