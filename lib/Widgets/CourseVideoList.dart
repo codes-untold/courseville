@@ -6,13 +6,15 @@ import 'package:flutter/material.dart';
 class CourseVideoList extends StatelessWidget {
 
   QueryDocumentSnapshot queryDocumentSnapshot;
+  String user;
+  int courseIndex;
 
-  CourseVideoList({this.queryDocumentSnapshot});
+  CourseVideoList({this.queryDocumentSnapshot,this.user,this.courseIndex});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder( itemBuilder: (context,index){
-      return VideoScreenListTile(queryDocumentSnapshot: queryDocumentSnapshot,i: index,);
+      return VideoScreenListTile(queryDocumentSnapshot: queryDocumentSnapshot,videoindex: index,user: user,courseindex: courseIndex,);
     },
     itemCount: (queryDocumentSnapshot.data()["coursevideo"] as List)?.length,
       shrinkWrap: true,

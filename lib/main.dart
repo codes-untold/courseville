@@ -1,7 +1,9 @@
 
+import 'package:courseville/Screens/AboutAppScreen.dart';
 import 'package:courseville/Screens/CourseVideoScreen.dart';
 import 'package:courseville/Screens/LoginScreen.dart';
 import 'package:courseville/Screens/NavigationScreen.dart';
+import 'package:courseville/Screens/ProfileScreen.dart';
 import 'package:courseville/TestWidget.dart';
 import 'package:courseville/Widgets/videoScreenListTile.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,11 +26,10 @@ Future <void> main()async {
     child: MaterialApp(
       routes: {
         "/hommy":(context) => HomeScreen(),
-        "/fommy":(context) => CourseVideoScreen()
       },
      home: await getBoolToSF()? NavigationScreen(): WelcomeScreen(),
      // home:  WelcomeScreen(),
-      //home: TestWidget(),
+    //  home: ProfileScreen(),
 
 
       debugShowCheckedModeBanner: false,

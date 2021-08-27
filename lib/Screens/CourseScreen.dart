@@ -2,6 +2,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Constants.dart';
+import 'package:courseville/Screens/CourseIntro.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/CourseListTile.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,8 @@ class _CourseScreenState extends State<CourseScreen> {
   @override
   void initState() {
     super.initState();
-    print(widget.queryDocumentSnapshot.data()["coursevideo"]);
+    print(widget.user);
+    print(widget.queryDocumentSnapshot.id);
 
 
     for(Map<String,dynamic> lister in (widget.queryDocumentSnapshot.data()["coursevideo"] as List)){
@@ -63,11 +65,14 @@ class _CourseScreenState extends State<CourseScreen> {
             child: Column(
               children: [
                 Container(
-                  child: CachedNetworkImage(
-                    width: 250,
-                    imageUrl: widget.queryDocumentSnapshot.data()["image"],
-                    placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.3,
-                      color: Colors.black12,),
+                  child: Hero(
+                    tag: widget.queryDocumentSnapshot.data()["name"],
+                    child: CachedNetworkImage(
+                      width: 250,
+                      imageUrl: widget.queryDocumentSnapshot.data()["image"],
+                      placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.3,
+                        color: Colors.black12,),
+                    ),
                   ),
                 ),
                 Container(
@@ -151,9 +156,10 @@ class _CourseScreenState extends State<CourseScreen> {
                       GestureDetector(
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return CourseVideoScreen(
+                            return CourseIntro(
                               queryDocumentSnapshot: widget.queryDocumentSnapshot,
-                              i: widget.courseScreenIndex,
+                              courseindex: widget.courseScreenIndex,
+                              user: widget.user,
                             );
                           }));
                         },
@@ -162,7 +168,7 @@ class _CourseScreenState extends State<CourseScreen> {
                           height: 50,
                           color: Color(0xffa450f8),
                           child: Center(
-                            child: Text("Start Course",
+                            child: Text("Get Started",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white

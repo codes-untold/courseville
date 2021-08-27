@@ -1,89 +1,33 @@
 
-import 'package:courseville/Widgets/CourseCards.dart';
-import 'package:courseville/Widgets/GridWidget.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class TestWidget extends StatelessWidget {
+class TestWidget extends StatefulWidget {
+
+
+
   @override
+  _TestWidgetState createState() => _TestWidgetState();
+}
 
+class _TestWidgetState extends State<TestWidget> {
 
-  int touchedIndex = -1;
+  @override
+  void initState() {
+    super.initState();
+    work();
+    print("dddd");
+  }
+  @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body:SafeArea(
-       child: Column(
-         children: [
-           Text("xfgxfg"),
-           ConstrainedBox(
-             constraints: BoxConstraints.tightFor(width: 200,height: 200),
-             child: PieChart(
-               PieChartData(
-                   sections: showingSections(),
-                   sectionsSpace: 0,
-                 centerSpaceRadius: 40
-
-               )
-             ),
-           ),
-         ],
-       ),
-      ),
     );
   }
 
+  work()async{
 
 
-  List<PieChartSectionData> showingSections() {
-    return List.generate(4, (i) {
-      final isTouched = i == touchedIndex;
-      final fontSize = isTouched ? 25.0 : 16.0;
-      final radius = isTouched ? 60.0 : 50.0;
-      switch (i) {
-        case 0:
-          return PieChartSectionData(
-            color: const Color(0xff0293ee),
-            value: 40,
-            title: '40%',
-            showTitle: false,
-            radius: radius,
-            titleStyle: TextStyle(
-                fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
-          );
-        case 1:
-          return PieChartSectionData(
-            color: const Color(0xfff8b250),
-            value: 30,
-            title: '30%',
-            radius: radius,
-            titleStyle: TextStyle(
-                fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
-          );
-        case 2:
-          return PieChartSectionData(
-            color: const Color(0xff845bef),
-            value: 15,
-            title: '15%',
-            radius: radius,
-            titleStyle: TextStyle(
-                fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
-          );
-        case 3:
-          return PieChartSectionData(
-            color: const Color(0xff13d38e),
-            value: 15,
-            title: '15%',
-            radius: radius,
-            titleStyle: TextStyle(
-                fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
-          );
-        default:
-          throw Error();
-      }
-    });
+
   }
 }
-
-

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Screens/CourseScreen.dart';
+import 'package:courseville/Screens/CourseVideoScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -66,7 +67,7 @@ class CourseIntro extends StatelessWidget {
              GestureDetector(
                onTap: (){
                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                   return CourseScreen(queryDocumentSnapshot: queryDocumentSnapshot,user: user,courseScreenIndex: courseindex,);
+                   return CourseVideoScreen(queryDocumentSnapshot: queryDocumentSnapshot,user: user,i: courseindex,);
                  }));
                },
                child: Container(
@@ -74,7 +75,7 @@ class CourseIntro extends StatelessWidget {
                  height: 50,
                  color: Color(0xffa450f8),
                  child: Center(
-                   child: Text("Get Started",
+                   child: Text("Start Course",
                    textAlign: TextAlign.center,
                    style: TextStyle(
                      color: Colors.white

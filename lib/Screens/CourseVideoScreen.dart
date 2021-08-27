@@ -4,6 +4,7 @@ import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/CourseVideoList.dart';
 import 'package:courseville/Widgets/MoreeWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -11,8 +12,9 @@ class CourseVideoScreen extends StatefulWidget {
 
   QueryDocumentSnapshot queryDocumentSnapshot;
   int i;
+  String user;
 
-  CourseVideoScreen({this.queryDocumentSnapshot,this.i});
+  CourseVideoScreen({this.queryDocumentSnapshot,this.i,this.user});
 
   @override
   _CourseVideoScreenState createState() => _CourseVideoScreenState();
@@ -22,21 +24,27 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
   int currentVideoID = 0;
   bool _isPlayerReady = false;
   PlayerState playerState;
-
-
   final ktabs = <Tab>[Tab(child: Text("Lectures"),),Tab(child: Text("More"),),];
-
   List <Widget> kTabPages;
   YoutubePlayerController youtubePlayerController;
+
+
+
+  @override
+  void initState(){
+    super.initState();
+WidgetsBinding.instance.addPostFrameCallback((_) {
+  initiateCourseData().then((value) => null);
+});
+  }
+
 
 
   @override
   Widget build(BuildContext context) {
 
-    youtubePlayerController = YoutubePlayerController
-      (initialVideoId:
-    widget.queryDocumentSnapshot.data()
-    ["coursevideo"][Provider.of<Data>(context,listen: false).videoID]["videoid"],
+    youtubePlayerController = YoutubePlayerController(initialVideoId:
+    widget.queryDocumentSnapshot.data()["coursevideo"][Provider.of<Data>(context,listen: false).videoID]["videoid"],
         flags: YoutubePlayerFlags(autoPlay: true,
           forceHD: true
         ))..addListener(() {
@@ -47,6 +55,8 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
 
     kTabPages = <Widget>[CourseVideoList(
       queryDocumentSnapshot: widget.queryDocumentSnapshot,
+      user: widget.user,
+      courseIndex: widget.i,
     ),Column(children: [
       MorreWidget(queryDocumentSnapshot: widget.queryDocumentSnapshot,youtubePlayerController: youtubePlayerController,)
     ],)];
@@ -136,7 +146,20 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
 
   @override
   void dispose() {
-   //youtubePlayerController.dispose();
+   youtubePlayerController.dispose();
+   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
+  }
+
+  Future <void> initiateCourseData()async{
+    var value = Provider.of<Data>(context,listen: false);
+    if(!widget.queryDocumentSnapshot.data()["hasStartedCourse"]){
+      value.addCourseResult(widget.i, (widget.queryDocumentSnapshot.data()["coursevideo"] as List).length);
+      await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
+      update({"hasStartedCourse": true}).then((value){
+        print("success");
+      });
+    }
+    print(Provider.of<Data>(context,listen: false).updatedCourseResult);
   }
 }

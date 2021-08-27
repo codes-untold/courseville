@@ -125,6 +125,8 @@ Future <void> createUser(username,email,password)async{
         querySnapshot.docs.forEach((element) async {
           list = element.data();
           list.removeWhere((key, value) => key == "favourite");
+          list.removeWhere((key, value) => key == "coursevideo");
+          list.removeWhere((key, value) => key == "hasStartedCourse");
 
 
 
