@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:courseville/Networking/Authentication.dart';
 import 'package:courseville/Networking/CourseFetch.dart';
 import 'package:courseville/Widgets/CourseCards.dart';
 import 'package:courseville/Widgets/OopsWidget.dart';
@@ -18,6 +19,7 @@ GridWidget({this.category,this.searchTerm,this.user,this.contextt});
 
 class _GridWidgetState extends State<GridWidget> {
   List <QueryDocumentSnapshot> list = [];
+  bool hasLoaded;
 
 
 
@@ -28,7 +30,10 @@ class _GridWidgetState extends State<GridWidget> {
   @override
   void initState(){
     super.initState();
-    fetch();
+    someFunction(widget.user).then((value) {
+      fetch();
+    });
+
   }
 
   fetch(){
@@ -36,18 +41,18 @@ class _GridWidgetState extends State<GridWidget> {
     if(widget.searchTerm != null){
       print("working fine");
       CourseFetch().searchFetch(widget.user,widget.searchTerm,context).then((value){
-        if(mounted){
+
           setState(() {
             list = value;
           });
-        }
+
       });
     }
 
     else{
       switch(widget.category){
         case "all": CourseFetch().generalFetch(widget.user,widget.contextt).then((value){
-          print("value");
+          print("vfmdfjgjfhihtidurhdirht");
           if(mounted){
             setState(() {
               list = value;
@@ -85,5 +90,10 @@ class _GridWidgetState extends State<GridWidget> {
     children: List.generate(list.length, (index){
       return CourseCard(querySnapshot: list[index],user: widget.user,cardindex: index,totalCards: list.length,);
     }),);
+  }
+
+
+  Future <void> someFunction(String user)async{
+     await Authentication().addUser(user);
   }
 }

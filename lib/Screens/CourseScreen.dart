@@ -33,6 +33,7 @@ class _CourseScreenState extends State<CourseScreen> {
     super.initState();
     print(widget.user);
     print(widget.queryDocumentSnapshot.id);
+    print(widget.queryDocumentSnapshot.data()["image"]);
 
 
     for(Map<String,dynamic> lister in (widget.queryDocumentSnapshot.data()["coursevideo"] as List)){

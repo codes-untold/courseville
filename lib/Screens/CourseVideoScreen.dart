@@ -14,6 +14,7 @@ class CourseVideoScreen extends StatefulWidget {
   int i;
   String user;
 
+
   CourseVideoScreen({this.queryDocumentSnapshot,this.i,this.user});
 
   @override
@@ -27,12 +28,14 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
   final ktabs = <Tab>[Tab(child: Text("Lectures"),),Tab(child: Text("More"),),];
   List <Widget> kTabPages;
   YoutubePlayerController youtubePlayerController;
+  Data provider;
 
 
 
   @override
   void initState(){
     super.initState();
+    provider = Provider.of<Data>(context,listen: false);
 WidgetsBinding.instance.addPostFrameCallback((_) {
   initiateCourseData().then((value) => null);
 });
@@ -45,9 +48,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
 
     youtubePlayerController = YoutubePlayerController(initialVideoId:
     widget.queryDocumentSnapshot.data()["coursevideo"][Provider.of<Data>(context,listen: false).videoID]["videoid"],
-        flags: YoutubePlayerFlags(autoPlay: true,
-          forceHD: true
-        ))..addListener(() {
+        flags: YoutubePlayerFlags(autoPlay: false, forceHD: true))..addListener(() {
           if(_isPlayerReady == true){
            playerState =  youtubePlayerController.value.playerState;
           }
@@ -57,6 +58,7 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
       queryDocumentSnapshot: widget.queryDocumentSnapshot,
       user: widget.user,
       courseIndex: widget.i,
+      youtubePlayerController: youtubePlayerController,
     ),Column(children: [
       MorreWidget(queryDocumentSnapshot: widget.queryDocumentSnapshot,youtubePlayerController: youtubePlayerController,)
     ],)];
@@ -153,13 +155,36 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
 
   Future <void> initiateCourseData()async{
     var value = Provider.of<Data>(context,listen: false);
-    if(!widget.queryDocumentSnapshot.data()["hasStartedCourse"]){
-      value.addCourseResult(widget.i, (widget.queryDocumentSnapshot.data()["coursevideo"] as List).length);
-      await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
-      update({"hasStartedCourse": true}).then((value){
-        print("success");
-      });
-    }
-    print(Provider.of<Data>(context,listen: false).updatedCourseResult);
+    Map<String,dynamic> courseNotification =  {"NotificationImage":widget.queryDocumentSnapshot.data()["image"],
+      "NotificationMessage":"Hey ${provider.username}, you just started the course on ${widget.queryDocumentSnapshot.data()["name"]}",
+      "NotificationName":DateTime.now().millisecondsSinceEpoch.toString(),
+      "HasReadNotification": false};
+
+
+
+
+            if(!provider.startedCourseNames.contains(widget.queryDocumentSnapshot.data()["name"])){
+              value.addCourseResult(widget.i, (widget.queryDocumentSnapshot.data()["coursevideo"] as List).length);
+              await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
+              update({"hasStartedCourse": true}).then((value){
+                provider.updateStartedCourseNames(widget.queryDocumentSnapshot.data()["name"]);
+              });
+
+              await FirebaseFirestore.instance.collection(widget.user).doc("Notifications").collection("Notifications").doc().set(
+                  {"NotificationImage": widget.queryDocumentSnapshot.data()["image"],
+                    "NotificationMessage":"Hey ${provider.username}, You just Started the course on ${widget.queryDocumentSnapshot.data()["name"]}",
+                    "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),
+                    "HasReadNotification": false}).then((value) {
+                provider.getNotifications(courseNotification);
+                provider.getNotificationIDs(widget.queryDocumentSnapshot.id);
+                provider.incrementNotificationCount();
+              });
+            }
+
+
+    //print(Provider.of<Data>(context,listen: false).updatedCourseResult);
+
   }
+
+
 }

@@ -19,7 +19,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   List <Widget> kTabPages;
   TabController tabController;
   String  user;
-  String username;
+  Data userData;
+  bool dataFetch = false;
+  bool hasLoaded = false;
 
   final ktabs = <Tab>[Tab(child: Text("All"),),Tab(child: Text("Popular"),),Tab(child: Text("Top"),),];
 
@@ -34,13 +36,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    var userData = Provider.of<Data>(context, listen: false);
+   userData = Provider.of<Data>(context, listen: false);
+    user = userData?.userInfo?.uid;
     tabController = TabController(length: ktabs.length, vsync: this);
     Services().getBoolToSF().then((value) {
       setState(() {
         user = userData?.userInfo?.uid ?? value[0];
-        username = userData?.userInfo?.displayName ?? value[1];
-        Authentication().addUser(user).then((_) => null);
+        print("this is the real $user");
+        userData.updateText(userData?.userInfo?.displayName ?? value[1]);
+        //Authentication().addUser(user).then((_){});
 
       });
     });
@@ -103,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             SizedBox(
                               height: 15,
                             ),
-                            Text("Hi Xeroes🖐️",style: TextStyle(
+                            Text("Hi ${userData.username}🖐️",style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                               fontSize: 25.0
@@ -149,11 +153,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               flex: 4,),
               Expanded(
                 child: Container(
+                  width: double.infinity,
                   padding: EdgeInsets.only(top: 20),
-                  child: user!=null?TabBarView(
+                  child: user==null?
+    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 69, 22, 99)))
+                      :TabBarView(
                     controller: tabController,
                     children: kTabPages,
-                  ):CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 69, 22, 99))),
+                  ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight:Radius.circular(30))

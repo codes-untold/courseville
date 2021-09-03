@@ -1,15 +1,21 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Services/Listener.dart';
+import 'package:courseville/Widgets/CongratsWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoScreenListTile extends StatefulWidget {
 
   QueryDocumentSnapshot queryDocumentSnapshot;
   int videoindex,courseindex;
   String user;
-  VideoScreenListTile({this.queryDocumentSnapshot,this.videoindex,this.courseindex,this.user});
+  YoutubePlayerController youtubePlayerController;
+
+  VideoScreenListTile({this.queryDocumentSnapshot,this.videoindex,this.courseindex,this.user,
+  this.youtubePlayerController});
+
   static const menuItems = <String>["Mark as Complete","Mark as Incomplete"];
 
 
@@ -21,8 +27,10 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
   List <dynamic> list,list2;
   List <bool> boolList = [];
   List <dynamic> map;
-  var provider;
+  Data provider;
   bool isComplete = false;
+  bool totalCompletion = false;
+
 
   final List <PopupMenuItem<String>> _popUpMenuItems = VideoScreenListTile.menuItems.map((String value) => PopupMenuItem<String>(
     value: value,
@@ -33,15 +41,16 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
   @override
   void initState() {
     super.initState();
+    provider =   Provider.of<Data>(context,listen: false);
     list = widget.queryDocumentSnapshot.data()["coursevideo"];
     list2 = widget.queryDocumentSnapshot.data()["coursevideo"];
-    List <dynamic> map = Provider.of<Data>(context,listen: false).isCourseComplete[widget.courseindex];
+    List <dynamic> map = provider.isCourseComplete[widget.courseindex];
     isComplete = map[widget.videoindex]["iscomplete"];
 
   }
   @override
   Widget build(BuildContext context) {
-  provider =   Provider.of<Data>(context,listen: false);
+
     return Padding(
       padding: const EdgeInsets.only(left: 8,right: 8),
       child: Consumer<Data>(
@@ -98,13 +107,15 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
                 list.removeAt(widget.videoindex);
                 list.insert(widget.videoindex, courseContent);
               }
-              print(list);
+
               provider.updateCourseResult(
                   widget.queryDocumentSnapshot.data()["name"], notifyCourseProgress(list));
+
               await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
               update({"coursevideo": list}).then((value){
                 provider.updateCourseBoolState(list, widget.courseindex);
                 print("success");
+
               });
               },
 
@@ -143,11 +154,64 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
 
   List <bool> notifyCourseProgress(List courseContentList){
     List <bool> updatedCourseProgress = [];
+    int totalCompletionCount = 0;
     for(int i = 0;i < courseContentList.length;i++){
 
       updatedCourseProgress.add(courseContentList[i]["iscomplete"]);
+      if(courseContentList[i]["iscomplete"]){
+        totalCompletionCount++;
+      }
+
+
+    }
+    if(totalCompletionCount == courseContentList.length){
+      totalCompletion = true;
+      dialogFunction(context);
+      updateCourseCompletion();
+      provider.addCompletedCourses(widget.queryDocumentSnapshot);
+      Future.delayed(Duration(seconds: 2),(){
+        widget.youtubePlayerController.pause();
+      });
+
 
     }
     return updatedCourseProgress;
+  }
+
+  dialogFunction(BuildContext context){
+    showDialog(context: context, builder: (context){
+      return Dialog(
+        elevation: 16,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: CongratsWidget(coursename: widget.queryDocumentSnapshot.data()["name"],
+          username: provider.username,),
+
+        ),
+      );
+    });
+  }
+
+  void updateCourseCompletion()async{
+
+    Map<String,dynamic> courseNotification =  {"NotificationImage":widget.queryDocumentSnapshot.data()["image"],
+      "NotificationMessage":"Great Job ${provider.username}, you just completed the course on ${widget.queryDocumentSnapshot.data()["name"]}",
+      "NotificationName":DateTime.now().millisecondsSinceEpoch.toString(),
+      "HasReadNotification": false};
+
+    await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
+    update({"hasEndedCourse": true}).then((value)async{
+
+      await FirebaseFirestore.instance.collection(widget.user).doc("Notifications").collection("Notifications").doc().set(
+          {"NotificationImage": widget.queryDocumentSnapshot.data()["image"],
+            "NotificationMessage":"Good job ${provider.username}!, You have successfully completed the course on ${widget.queryDocumentSnapshot.data()["name"]}",
+            "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),
+            "HasReadNotification": false}).then((value) {
+        provider.getNotifications(courseNotification);
+        provider.getNotificationIDs(widget.queryDocumentSnapshot.id);
+        provider.incrementNotificationCount();
+
+      });
+    });
   }
 }

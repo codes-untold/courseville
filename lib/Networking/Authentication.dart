@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Screens/HomeScreen.dart';
 import 'package:courseville/Screens/LoginScreen.dart';
 import 'package:courseville/Screens/NavigationScreen.dart';
+import 'package:courseville/Screens/SplashScreen.dart';
 import 'package:courseville/Services.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,19 +17,26 @@ class Authentication{
 
 
 
+
 Future <void> createUser(username,email,password)async{
   try {
     UserCredential newUser = await  _auth.createUserWithEmailAndPassword(email: email, password: password);
     if(newUser != null){
       await newUser.user.updateDisplayName(username).then((value)async{
         CollectionReference users = FirebaseFirestore.instance.collection(_auth.currentUser.uid);
-        await users.doc(_auth.currentUser.uid).set({"id":_auth.currentUser.uid})
+        await users.doc(_auth.currentUser.uid).set({"id":_auth.currentUser.uid,})
             .then((value)async {
-          await newUser.user.sendEmailVerification().then((value){
-            services.displayToast("Please check your email for verification");
-          });
-        })
-            .catchError((error){print(error);});
+              await users.doc("Notifications").collection("Notifications").doc().set(
+                  {"NotificationImage":null,
+                  "NotificationMessage":"Hey $username, welcome to courseville😀",
+                  "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),
+                  "HasReadNotification": false}).then((value)async{
+
+                await newUser.user.sendEmailVerification().then((value){
+                  services.displayToast("Please check your email for verification");
+                });
+              });
+        }).catchError((error){print(error);});
       });
 
     }
@@ -66,11 +74,13 @@ Future <void> createUser(username,email,password)async{
               addBoolToSF(_auth);
               print(_auth.currentUser.uid);
               Provider.of<Data>(context,listen: false).updateUser(_auth.currentUser);
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                return NavigationScreen();
-              }));
+              checkForNotifications(_auth.currentUser.uid, context).then((value) {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+                  return NavigationScreen();
+                }));
+                services.displayToast("Email  verified");
+              });
 
-              services.displayToast("Email  verified");
             }
             else {
               services.displayToast("Email not verified");
@@ -113,7 +123,7 @@ Future <void> createUser(username,email,password)async{
       }
 
 
-  Future <void> addUser(String user) async {
+  Future <bool> addUser(String user) async {
     Map<String, dynamic> list;
     int a = 0;
     var res = await FirebaseFirestore.instance.doc("$user/${user}1").get();
@@ -127,6 +137,7 @@ Future <void> createUser(username,email,password)async{
           list.removeWhere((key, value) => key == "favourite");
           list.removeWhere((key, value) => key == "coursevideo");
           list.removeWhere((key, value) => key == "hasStartedCourse");
+          list.removeWhere((key, value) => key == "hasEndedCourse");
 
 
 
@@ -139,6 +150,7 @@ Future <void> createUser(username,email,password)async{
           });
         });
       });
+      return true;
     }
 
     else {
@@ -155,6 +167,29 @@ Future <void> createUser(username,email,password)async{
           });
         });
       });
+      return true;
     }
   }
+}
+
+Future <void> checkForNotifications(String user,BuildContext context)async{
+  int noOfNotifications = 0;
+  Data provider = Provider.of<Data>(context,listen: false);
+
+  await FirebaseFirestore.instance.collection(user).doc("Notifications").
+  collection("Notifications").orderBy("NotificationName").get().then((value){
+    print("dghdthf");
+    print(value.docs[0].data());
+
+    for(int i = 0; i < value.docs.length; i++){
+      provider.getNotifications(value.docs[i].data());
+      provider.getNotificationIDs(value.docs[i].id);
+      if(!value.docs[i].data()["HasReadNotification"]){
+        provider.incrementNotificationCount();
+      }
+    }
+    print(noOfNotifications);
+    print(provider.notifications);
+
+  });
 }

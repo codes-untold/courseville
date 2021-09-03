@@ -33,7 +33,7 @@ class SearchScreen extends StatelessWidget {
                 SizedBox(height:MediaQuery.of(context).size.height * 0.0864,),
                 Column(
                   children: [
-                    Image.asset("images/searchimage.png"),
+                    Image.asset("images/searchimage.png",gaplessPlayback: true,),
                     Text("Search for your favourite course"),
                   ],
                 )

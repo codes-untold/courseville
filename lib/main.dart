@@ -1,11 +1,9 @@
 
-import 'package:courseville/Screens/AboutAppScreen.dart';
-import 'package:courseville/Screens/CourseVideoScreen.dart';
-import 'package:courseville/Screens/LoginScreen.dart';
+import 'package:courseville/Screens/AllCertificateScreen.dart';
 import 'package:courseville/Screens/NavigationScreen.dart';
 import 'package:courseville/Screens/ProfileScreen.dart';
+import 'package:courseville/Screens/SplashScreen.dart';
 import 'package:courseville/TestWidget.dart';
-import 'package:courseville/Widgets/videoScreenListTile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,22 +23,14 @@ Future <void> main()async {
     create:(context) => Data(),
     child: MaterialApp(
       routes: {
-        "/hommy":(context) => HomeScreen(),
+        "/hommy":(context) => NavigationScreen(),
       },
-     home: await getBoolToSF()? NavigationScreen(): WelcomeScreen(),
-     // home:  WelcomeScreen(),
-    //  home: ProfileScreen(),
+    // home: await getBoolToSF()? NavigationScreen(): WelcomeScreen(),
+   home: SplashScreen(),
+    //  home: AllCertificateScreen(),
 
 
       debugShowCheckedModeBanner: false,
     ),
   ));
 }
-
-getBoolToSF()async{
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  bool boolvalue = preferences.getBool("boolvalue")?? false;
-  return boolvalue;
-
-}
-

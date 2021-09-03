@@ -10,6 +10,9 @@ class ProgressCarousel extends StatelessWidget {
   int completedVideos;
   int totalVideos;
   List <Widget> list = [];
+  bool hasStarted;
+
+  ProgressCarousel({this.hasStarted});
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +52,10 @@ class ProgressCarousel extends StatelessWidget {
         if(items[i]["courseprogress"][a]){
           counter++;
         }
-
       }
-      list.add(ProgressCard(name:items[i]["coursename"],completedVideos: counter,totalVideos: (items[i]["courseprogress"] as List).length.toDouble(),),
+
+      list.add(ProgressCard(name:items[i]["coursename"],completedVideos: counter,hasStarted: hasStarted,
+        totalVideos: (items[i]["courseprogress"] as List).length.toDouble(),),
       );
       counter = 0;
     }

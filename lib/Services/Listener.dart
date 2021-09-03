@@ -8,21 +8,54 @@ import 'package:flutter/material.dart';
 class Data extends ChangeNotifier{
 
 
-  String auth;
+  String username;
   User userInfo;
   String searchTerm;
-  List <bool> favourite;
+  List <bool> favourite= [];
   int videoID =0;
   List isCourseComplete = [];
   List courseNames = [];
+  List courseImages= [];
   List generalList = [];
+  int notificationCount = 0;
   List<Map<String,dynamic>> updatedCourseResult = [];
+  List<Map<String,dynamic>> completedCourses = [];
+  List<Map<String,dynamic>> notifications = [];
+  List <String> notificationIDs = [];
+  List <String> startedCourseNames = [];
+
 
 
 
   void updateText(String text){
-    auth = text;
+    username = text;
+    notifyListeners();
+  }
 
+  void updateStartedCourseNames(String name){
+    startedCourseNames.add(name);
+    notifyListeners();
+  }
+
+  void getStartedCourseNames(List <QueryDocumentSnapshot> list){
+    for(int i = 0; i < list.length;i++){
+      if(list[i].data()["hasStartedCourse"]){
+        startedCourseNames.add(list[i].data()["name"]);
+      }
+    }
+    print("jnsiubuiuidrgihgihgieg");
+    notifyListeners();
+  }
+
+
+  void incrementNotificationCount(){
+    notificationCount++;
+    notifyListeners();
+    print(notificationCount);
+  }
+
+  void resetNotificationCount(){
+    notificationCount = 0;
     notifyListeners();
   }
 
@@ -69,11 +102,28 @@ void updateSearch(String search){
 
   }
 
+  void addCourseImages(List list){
+    courseImages = list;
+    notifyListeners();
+  }
+
   void addCourseResult(int index,int length){
     updatedCourseResult.add({
       "coursename": courseNames[index],
+      "courseimage": courseImages[index],
       "courseprogress": fillBoolState(length)
     });
+    notifyListeners();
+    print(updatedCourseResult);
+  }
+
+  void addCertificates(String name){
+    for(int i = 0;i < updatedCourseResult.length;i++){
+      if(updatedCourseResult[i].containsValue(name)){
+       completedCourses.add(updatedCourseResult[i]);
+      }
+    }
+
     notifyListeners();
   }
 
@@ -86,6 +136,26 @@ void updateSearch(String search){
     }
     notifyListeners();
     print(updatedCourseResult);
+  }
+
+  void addCompletedCourses(QueryDocumentSnapshot queryDocumentSnapshot){
+
+    if(completedCourses.isEmpty){
+      completedCourses.add({
+      "coursename": queryDocumentSnapshot.data()["name"],
+      "courseimage": queryDocumentSnapshot.data()["image"],
+      "courseprogress": queryDocumentSnapshot.data()["coursevideo"]
+      });
+    }
+
+    else{
+      for(int i = 0;i < updatedCourseResult.length;i++){
+        if(updatedCourseResult[i].containsValue(queryDocumentSnapshot.data()["name"])){
+          completedCourses.add(updatedCourseResult[i]);
+        }
+      }
+    }
+    notifyListeners();
   }
 
   List <bool> fillBoolState(int length){
@@ -105,15 +175,43 @@ void updateSearch(String search){
   }
 
   void getResults(List <QueryDocumentSnapshot> list){
-    for(int i = 0; i < list.length;i++){
-      if(list[i].data()["hasStartedCourse"]){
-        updatedCourseResult.add({
-          "coursename": list[i].data()["name"],
-          "courseprogress": loopBoolList(list[i].data()["coursevideo"])
-        });
+    if(updatedCourseResult.isEmpty){
+      for(int i = 0; i < list.length;i++){
+        if(list[i].data()["hasStartedCourse"]){
+          updatedCourseResult.add({
+            "coursename": list[i].data()["name"],
+            "courseimage": list[i].data()["image"],
+            "courseprogress": loopBoolList(list[i].data()["coursevideo"])
+          });
+        }
       }
     }
-    print(updatedCourseResult);
+    notifyListeners();
+  }
+
+  void getCompletedCourses(List <QueryDocumentSnapshot> list){
+      for(int i = 0; i < list.length;i++){
+        if(list[i].data()["hasEndedCourse"]){
+          completedCourses.add({
+            "coursename": list[i].data()["name"],
+            "courseimage": list[i].data()["image"],
+            "courseprogress": loopBoolList(list[i].data()["coursevideo"])
+          });
+        }
+      }
+
+    notifyListeners();
+  }
+
+  void getNotifications(Map<String,dynamic> map){
+    notifications.insert(0, map);
+    notifyListeners();
+    print(notifications);
+    print("stuff");
+  }
+
+  void getNotificationIDs(String value){
+    notificationIDs.insert(0, value);
     notifyListeners();
   }
 }

@@ -13,28 +13,20 @@ class CourseFetch{
   List <bool> favList = [];
   List boolList = [];
   List courseNames = [];
+  List courseImages = [];
 
   Future <List <QueryDocumentSnapshot>> generalFetch(String user,BuildContext context)async{
       var value =   Provider.of<Data>(context,listen: false);
+      print("this is $user");
    await FirebaseFirestore.instance.collection(user).get().then((querySnapshot){
      boolList.clear();
      querySnapshot.docs.forEach((element) {
        if(element.data()["name"]!= null){
-
-         lister.add(element);
-         favList.add(element.data()["favourite"]);
-         boolList.add(element.data()["coursevideo"]);
-          courseNames.add(element.data()["name"]);
-
+         getData(element);
        }
 
      });
-
-     value.addFavouriteList(favList);
-     value.addCourseBoolState(boolList);
-     value.addCourseNames(courseNames);
-     value.getResults(lister);
-
+     sendDataToProvider(value);
     });
    return lister;
   }
@@ -45,17 +37,9 @@ class CourseFetch{
       list.clear();
 
       querySnapshot.docs.forEach((element) {
-        lister.add(element);
-        favList.add(element.data()["favourite"]);
-        boolList.add(element.data()["coursevideo"]);
-        courseNames.add(element.data()["names"]);
-
-
+        getData(element);
       });
-      print(favList);
-      value.addFavouriteList(favList);
-      value.addCourseBoolState(boolList);
-      value.addCourseNames(courseNames);
+      sendDataToProvider(value);
     });
     return lister;
   }
@@ -65,17 +49,10 @@ class CourseFetch{
     await FirebaseFirestore.instance.collection(user).where("category",isEqualTo: "Top").get().then((querySnapshot){
       list.clear();
       querySnapshot.docs.forEach((element) {
-        lister.add(element);
-        favList.add(element.data()["favourite"]);
-        boolList.add(element.data()["coursevideo"]);
-        courseNames.add(element.data()["names"]);
-
+        getData(element);
 
       });
-      print(favList);
-      value.addFavouriteList(favList);
-      value.addCourseBoolState(boolList);
-      value.addCourseNames(courseNames);
+      sendDataToProvider(value);
     });
     return lister;
   }
@@ -86,9 +63,7 @@ class CourseFetch{
       var value =   Provider.of<Data>(context,listen: false);
       querySnapshot.docs.forEach((element) {
         if(element.data()["name"]!= null){
-
           lister.add(element);
-
         }
 
       });
@@ -96,26 +71,42 @@ class CourseFetch{
      lister.removeWhere((element) {
        String data = (element.data()["name"]);
 
-
        if(!(data.toLowerCase().contains(search.toLowerCase())))
          {
-
            return true;
          }
        else{
          favList.add(element.data()["favourite"]);
          boolList.add(element.data()["coursevideo"]);
          courseNames.add(element.data()["names"]);
+         courseImages.add(element.data()["image"]);
 
          return false;
        }
      });
-
-      print(favList);
-      value.addFavouriteList(favList);
-      value.addCourseBoolState(boolList);
-      value.addCourseNames(courseNames);
+      sendDataToProvider(value);
     });
     return lister;
   }
+
+  void getData(QueryDocumentSnapshot element){
+    lister.add(element);
+    favList.add(element.data()["favourite"]);
+    boolList.add(element.data()["coursevideo"]);
+    courseNames.add(element.data()["name"]);
+    courseImages.add(element.data()["image"]);
+
+  }
+
+  void sendDataToProvider(Data value){
+    value.addFavouriteList(favList);
+    value.addCourseBoolState(boolList);
+    value.addCourseNames(courseNames);
+    value.addCourseImages(courseImages);
+    value.getResults(lister);
+    value.getCompletedCourses(lister);
+    value.getStartedCourseNames(lister);
+
+  }
+
 }

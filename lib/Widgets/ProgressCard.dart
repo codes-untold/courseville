@@ -10,9 +10,10 @@ class ProgressCard extends StatelessWidget {
   String name;
   double completedVideos;
   double totalVideos;
+  bool hasStarted;
 
 
-  ProgressCard({this.name,this.completedVideos,this.totalVideos});
+  ProgressCard({this.name,this.completedVideos,this.totalVideos,this.hasStarted});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -23,7 +24,11 @@ class ProgressCard extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: 150,
-        child: Row(
+        child: hasStarted? Center(child:
+        Text("You have no Courses yet",style: TextStyle(
+          color: Colors.white,
+          fontSize: 15
+        ),)): Row(
           children: [
             Expanded(child: Container(
               child: Padding(

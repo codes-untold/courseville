@@ -23,8 +23,8 @@ class Services{
   }
    Future <List<String>> getBoolToSF()async{
      SharedPreferences preferences = await SharedPreferences.getInstance();
-     List <String> boolvalue = preferences.getStringList("UID");
-     return boolvalue;
+     List <String> value = preferences.getStringList("UID");
+     return value;
 
    }
 
@@ -36,7 +36,7 @@ class Services{
      showInSnackBar("Sharing Course...", context);
      final response = await get(Uri.parse(imageUrl));
      final bytes = response.bodyBytes;
-     final Directory temp = await getTemporaryDirectory();
+     final Directory temp = await getExternalStorageDirectory();
      final File imageFile = File('${temp.path}/tempImage.jpg');
      imageFile.writeAsBytesSync(bytes);
      Share.shareFiles(['${temp.path}/tempImage.jpg'], text: about,);

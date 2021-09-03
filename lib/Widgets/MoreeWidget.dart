@@ -4,6 +4,8 @@ import 'package:courseville/Services.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import 'CongratsWidget.dart';
+
 class MorreWidget extends StatelessWidget {
 
   QueryDocumentSnapshot queryDocumentSnapshot;
@@ -18,7 +20,7 @@ class MorreWidget extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: (){
-              youtubePlayerController.pause();
+             youtubePlayerController.pause();
               Navigator.push(context, MaterialPageRoute(builder: (context){
                 return AboutCourseScreen(queryDocumentSnapshot: queryDocumentSnapshot,);
               }));
@@ -65,5 +67,18 @@ class MorreWidget extends StatelessWidget {
   String aboutCourse(String name){
     return "I am currently learning $name on the courseville app, its so much fun and exciting!!!"
         "Get it on Playstore Now!!!";
+  }
+
+  dialogFunction(BuildContext context){
+    showDialog(context: context, builder: (context){
+      return Dialog(
+        elevation: 16,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: CongratsWidget(),
+
+        ),
+      );
+    });
   }
 }
