@@ -170,7 +170,9 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
                 provider.updateStartedCourseNames(widget.queryDocumentSnapshot.data()["name"]);
               });
 
-              await FirebaseFirestore.instance.collection(widget.user).doc("Notifications").collection("Notifications").doc().set(
+              await FirebaseFirestore.instance.collection(widget.user).doc("Notifications").collection("Notifications").doc(
+                  widget.queryDocumentSnapshot.id
+              ).set(
                   {"NotificationImage": widget.queryDocumentSnapshot.data()["image"],
                     "NotificationMessage":"Hey ${provider.username}, You just Started the course on ${widget.queryDocumentSnapshot.data()["name"]}",
                     "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),

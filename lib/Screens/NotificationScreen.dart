@@ -29,12 +29,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
     list = provider.notifications;
     print(list);
 
+
     for(int i = 0;i < list.length; i++){
       listTile?.add(NotificationTile(notificationImage: list[i]["NotificationImage"],
         notificationMessage:list[i]["NotificationMessage"],));
       list[i].update("HasReadNotification", (value) =>true);
     }
 
+    print(list);
     Services().getBoolToSF().then((value) {
       user = value[0];
      updateNotification();
@@ -43,7 +45,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
 
 
-    print(list);
   }
   @override
   Widget build(BuildContext context) {
@@ -78,10 +79,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   void updateNotification(){
    List notificationIds =  provider.notificationIDs;
-      for(int i = 0; i< list.length; i++){
+   print(list.length);
+   print(list.length);
+   print(list.length);
+   print(list.length);
+
+   for(int i = 0; i< list.length; i++){
         FirebaseFirestore.instance.collection(user).doc("Notifications").
         collection("Notifications").doc(notificationIds[i]).set(list[i]);
+       print(notificationIds[i]);
       }
+
+   /*for(int i = 0; i< list.length; i++){
+     FirebaseFirestore.instance.collection(user).doc("Notifications").
+     collection("Notifications").doc(notificationIds[i]).set(list[i]);
+   }*/
   }
 }
 

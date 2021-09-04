@@ -14,6 +14,7 @@ class NotificationTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Card(
+        color: Colors.white,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10)
         ),
@@ -31,13 +32,13 @@ class NotificationTile extends StatelessWidget {
               child: Image.asset("images/avatar.jpg",width: 40,gaplessPlayback: true,),
             ):CachedNetworkImage(
               imageUrl: notificationImage,
-              placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.3,
+              placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.1,
                 color: Colors.black12,),
             ),
             title: Text(notificationMessage,
               style: TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w500
+                  fontWeight: FontWeight.w400
               ),),
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 4),

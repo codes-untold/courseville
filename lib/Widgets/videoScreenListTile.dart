@@ -167,8 +167,10 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
     if(totalCompletionCount == courseContentList.length){
       totalCompletion = true;
       dialogFunction(context);
-      updateCourseCompletion();
-      provider.addCompletedCourses(widget.queryDocumentSnapshot);
+      if(!widget.queryDocumentSnapshot.data()["hasEndedCourse"]) {
+        updateCourseCompletion();
+        provider.addCompletedCourses(widget.queryDocumentSnapshot);
+      }
       Future.delayed(Duration(seconds: 2),(){
         widget.youtubePlayerController.pause();
       });
@@ -202,7 +204,9 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
     await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
     update({"hasEndedCourse": true}).then((value)async{
 
-      await FirebaseFirestore.instance.collection(widget.user).doc("Notifications").collection("Notifications").doc().set(
+      await FirebaseFirestore.instance.collection(widget.user).doc("Notifications").collection("Notifications").doc(
+          "${widget.queryDocumentSnapshot.id}complete"
+      ).set(
           {"NotificationImage": widget.queryDocumentSnapshot.data()["image"],
             "NotificationMessage":"Good job ${provider.username}!, You have successfully completed the course on ${widget.queryDocumentSnapshot.data()["name"]}",
             "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),

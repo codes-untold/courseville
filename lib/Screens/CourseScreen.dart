@@ -7,7 +7,6 @@ import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/CourseListTile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../Services.dart';
 import 'CourseVideoScreen.dart';
 
@@ -15,8 +14,9 @@ class CourseScreen extends StatefulWidget {
   QueryDocumentSnapshot queryDocumentSnapshot;
   String user;
   int courseScreenIndex;
+  bool canHandleFavouriteOperations;
 
-  CourseScreen({this.queryDocumentSnapshot,this.user,this.courseScreenIndex});
+  CourseScreen({this.queryDocumentSnapshot,this.user,this.courseScreenIndex,this.canHandleFavouriteOperations});
 
   @override
   _CourseScreenState createState() => _CourseScreenState();
@@ -189,36 +189,39 @@ class _CourseScreenState extends State<CourseScreen> {
           ),
         )
       ),
-   floatingActionButton: Consumer<Data>(
-     builder: (context,data,_){
-       return FloatingActionButton(
-         onPressed: ()async{
-           if(data.favourite[widget.courseScreenIndex]){
-             color = Colors.white;
-             data.UpdateFavouriteList(widget.courseScreenIndex, false);
-             Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Removed from Favourites•☹️",context);
-             await FirebaseFirestore.instance.collection(
-                 widget.user).doc(
-                 widget.queryDocumentSnapshot.id
-             ).update({"favourite": false});
-           }
+   floatingActionButton: Visibility(
+     visible: widget.canHandleFavouriteOperations,
+     child: Consumer<Data>(
+       builder: (context,data,_){
+         return FloatingActionButton(
+           onPressed: ()async{
+             if(data.favourite[widget.courseScreenIndex]){
+               color = Colors.white;
+               data.UpdateFavouriteList(widget.courseScreenIndex, false);
+               Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Removed from Favourites•☹️",context);
+               await FirebaseFirestore.instance.collection(
+                   widget.user).doc(
+                   widget.queryDocumentSnapshot.id
+               ).update({"favourite": false});
+             }
 
-           else{
-             color = Colors.amber;
-             data.UpdateFavouriteList(widget.courseScreenIndex, true);
-             Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Added to Favourites😀",context);
-             await FirebaseFirestore.instance.collection(
-                 widget.user).doc(
-                 ( widget.queryDocumentSnapshot.id)
-             ).update({"favourite": true});
-           }
-         },
-         backgroundColor: Color.fromARGB(255, 69, 22, 99),
-         child: Icon(Icons.favorite,
-           color: color,),
-       );
-     },
+             else{
+               color = Colors.amber;
+               data.UpdateFavouriteList(widget.courseScreenIndex, true);
+               Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Added to Favourites😀",context);
+               await FirebaseFirestore.instance.collection(
+                   widget.user).doc(
+                   ( widget.queryDocumentSnapshot.id)
+               ).update({"favourite": true});
+             }
+           },
+           backgroundColor: Color.fromARGB(255, 69, 22, 99),
+           child: Icon(Icons.favorite,
+             color: color,),
+         );
+       },
 
+     ),
    ), );
   }
 

@@ -1,5 +1,6 @@
 
 import 'package:courseville/Screens/AllCertificateScreen.dart';
+import 'package:courseville/Screens/PaymentScreen.dart';
 import 'package:courseville/Services.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/ProfileCard.dart';
@@ -7,6 +8,7 @@ import 'package:courseville/Widgets/ProgreeCarousel.dart';
 import 'package:courseville/Widgets/ProgressCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterwave/core/flutterwave.dart';
 import 'package:provider/provider.dart';
 
 import 'AboutAppScreen.dart';
@@ -79,12 +81,22 @@ class ProfileScreen extends StatelessWidget {
                      },),
                      SizedBox(height: 10,),
 
-                     ProfileCard(text1: "images/donationimage.png",text2: "Support Us"), ],
+                     ProfileCard(text1: "images/donationimage.png",text2: "Support Us",function: (){
+                       Navigator.push(context, MaterialPageRoute(builder: (context){
+                         return PaymentScreen();
+                       }));
+                     },), ],
                  ),
                ),
              ),
             ),
     );
+  }
+
+  void launchPayment()async{
+
+    /* Flutterwave flutterwave = Flutterwave.forUIPayment
+       ();*/
   }
 }
 

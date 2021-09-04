@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:courseville/Screens/CourseIntro.dart';
 import 'package:courseville/Screens/CourseScreen.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +41,8 @@ class _CourseCardState extends State<CourseCard> {
     return GestureDetector(
       onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context){
-          return CourseScreen(queryDocumentSnapshot: widget.querySnapshot,user: widget.user,courseScreenIndex: widget.cardindex,);
+          return CourseScreen(queryDocumentSnapshot: widget.querySnapshot,user: widget.user,
+            courseScreenIndex: widget.cardindex,canHandleFavouriteOperations: true,);
         }));
       },
       child: Padding(
