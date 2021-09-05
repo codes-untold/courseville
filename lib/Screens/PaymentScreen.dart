@@ -1,194 +1,290 @@
+import 'package:courseville/Services.dart';
+import 'package:courseville/Widgets/AppreciationWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterwave/core/flutterwave.dart';
+import 'package:flutterwave/flutterwave.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-class PaymentScreen extends StatelessWidget {
-  Image logo,logo2;
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  final amountController = TextEditingController();
-  final currencyController = TextEditingController();
+class PaymentScreen extends StatefulWidget {
 
 
   @override
+  _PaymentScreenState createState() => _PaymentScreenState();
+}
+
+class _PaymentScreenState extends State<PaymentScreen> {
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+
+  final amountController = TextEditingController();
+
+  final nameController = TextEditingController();
+
+  final phoneController = TextEditingController();
+
+  final emailController = TextEditingController();
+
+  bool loading = false;
+
+  @override
   Widget build(BuildContext context) {
-    logo = Image.asset("images/avatar.jpg", gaplessPlayback: true,);
+   // popUpDialog(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 69, 22, 99),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-              SizedBox(height: 30,),
-              Container(
-                width: double.infinity,
-                child: CircleAvatar(
-                  backgroundColor: Color(0xffe4c5f1),
-                  radius: 80,
-                  child:  Image.asset("images/avatar2.png",width: 120,gaplessPlayback: true,),
+        child: ModalProgressHUD(
+          inAsyncCall: loading,
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Column(children: [
+                    SizedBox(height: 30,),
+                    Flexible(
+                      child: Container(
+                        width: double.infinity,
+                        child: CircleAvatar(
+                          backgroundColor: Color(0xffe4c5f1),
+                          radius: 80,
+                          child:  Image.asset("images/avatar2.png",width: 120,gaplessPlayback: true,),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15,),
+                    Text("Support Courseville🎁",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700
+                      ),),
+                    SizedBox(height: 30,),
+                    Form(
+                      key: _formkey,
+                      child: Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Material(
+                                shadowColor: Colors.black,
+                                elevation: 0.5,
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                child: TextFormField(
+                                  controller: nameController,
+                                  validator: (value){
+                                    if(value.isEmpty){
+                                      return "name is Required";
+                                    }
+
+                                    return null;
+                                  },
+                                  onSaved: (value){
+
+                                  },
+                                  decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      labelText: "Name",
+                                      filled: true,
+                                      contentPadding: EdgeInsets.only(top: 10.0,bottom: 10.0),
+                                      prefixIcon: Icon(Icons.person,color: Colors.black,),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none
+                                      )
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Flexible(
+                              child: Material(
+                                shadowColor: Colors.black,
+                                elevation: 2.5,
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                child: TextFormField(
+                                  controller: emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (value){
+                                    if(value.isEmpty){
+                                      return "Email is required";
+                                    }
+
+                                    return null;
+                                  },
+                                  onSaved: (value){
+
+                                  },
+                                  decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      labelText: "Email Address",
+                                      filled: true,
+                                      contentPadding: EdgeInsets.only(top: 10.0,bottom: 10.0),
+                                      prefixIcon: Icon(Icons.mail,color: Colors.black,),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none
+                                      )
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Flexible(
+                              child: Material(
+                                shadowColor: Colors.black,
+                                elevation: 4.5,
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                child: TextFormField(
+                                  controller: phoneController,
+                                  validator: (value){
+                                    if(value.isEmpty){
+                                      return "Enter your phone Number";
+                                    }
+
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.phone,
+                                  decoration: InputDecoration(
+                                      labelText: "Phone No",
+                                      contentPadding: EdgeInsets.only(top: 10.0,bottom: 10.0),
+                                      prefixIcon: Icon(Icons.call,color: Colors.black,),
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none
+                                      )
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Flexible(
+                              child: Material(
+                                shadowColor: Colors.black,
+                                elevation: 4.5,
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                child: TextFormField(
+                                  controller: amountController,
+                                  validator: (value){
+                                    if(value.isEmpty){
+                                      return "Enter Amount";
+                                    }
+
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                      labelText: "NGN",
+                                      hintText: "Amount",
+                                      contentPadding: EdgeInsets.only(top: 10.0,bottom: 10.0),
+                                      prefixIcon: Icon(Icons.monetization_on,color: Colors.black,),
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none
+                                      )
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],),
                 ),
-              ),
-              SizedBox(height: 15,),
-              Text("Support Courseville🎁",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700
-              ),),
-              SizedBox(height: 30,),
-              Form(
-                key: _formkey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Material(
-                        shadowColor: Colors.black,
-                        elevation: 0.5,
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        child: TextFormField(
-                          validator: (value){
-                            if(value.isEmpty){
-                              return "Username is Required";
-                            }
-
-                            return null;
-                          },
-                          onSaved: (value){
-
-                          },
-                          decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              labelText: "Name",
-                              filled: true,
-                              contentPadding: EdgeInsets.only(top: 10.0,bottom: 10.0),
-                              prefixIcon: Icon(Icons.person,color: Colors.black,),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide.none
-                              )
-                          ),
-                        ),
-                      ),
+                GestureDetector(
+                  onTap: (){
+                    if(this._formkey.currentState.validate()){
+                      setState(() {
+                        loading = true;
+                      });
+                      launchPayment(context);
+                    }
+                   // popUpDialog(context);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    color: Color(0xffa450f8),
+                    child: Center(
+                      child: Text("Support",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white
+                        ),),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Flexible(
-                      child: Material(
-                        shadowColor: Colors.black,
-                        elevation: 2.5,
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        child: TextFormField(
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value){
-                            if(value.isEmpty){
-                              return "Email is required";
-                            }
-
-                            return null;
-                          },
-                          onSaved: (value){
-
-                          },
-                          decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              labelText: "Email Address",
-                              filled: true,
-                              contentPadding: EdgeInsets.only(top: 10.0,bottom: 10.0),
-                              prefixIcon: Icon(Icons.mail,color: Colors.black,),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide.none
-                              )
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Flexible(
-                      child: Material(
-                        shadowColor: Colors.black,
-                        elevation: 4.5,
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        child: TextFormField(
-                          onChanged: (value){
-
-                          },
-                          validator: (value){
-                            if(value.isEmpty){
-                              return "Phone";
-                            }
-
-                            return null;
-                          },
-                          keyboardType: TextInputType.visiblePassword,
-                          decoration: InputDecoration(
-                              labelText: "Phone No",
-                              contentPadding: EdgeInsets.only(top: 10.0,bottom: 10.0),
-                              prefixIcon: Icon(Icons.call,color: Colors.black,),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide.none
-                              )
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Flexible(
-                      child: Material(
-                        shadowColor: Colors.black,
-                        elevation: 4.5,
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        child: TextFormField(
-                          onChanged: (value){
-
-                          },
-                          validator: (value){
-                            if(value.isEmpty){
-                              return "Phone";
-                            }
-
-                            return null;
-                          },
-                          keyboardType: TextInputType.visiblePassword,
-                          decoration: InputDecoration(
-                              labelText: "NGN",
-                              hintText: "Amount",
-                              contentPadding: EdgeInsets.only(top: 10.0,bottom: 10.0),
-                              prefixIcon: Icon(Icons.monetization_on,color: Colors.black,),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  borderSide: BorderSide.none
-                              )
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  void launchPayment(BuildContext context)async{
+
+     Flutterwave flutterwave = Flutterwave.forUIPayment
+       (fullName: nameController.text,
+     context: context,
+     publicKey: "FLWPUBK_TEST-7f782282dfb351547b3afdc7a71e7bbf-X",
+     encryptionKey: "FLWSECK_TEST64bb089f5851",
+     email: emailController.text,
+     txRef: DateTime.now().toString(),
+     amount: amountController.text,
+    phoneNumber: phoneController.text,
+     currency: FlutterwaveCurrency.NGN,
+     isDebugMode: false,
+     acceptBankTransfer: true,
+     acceptCardPayment: true,
+     acceptUSSDPayment: true);
+
+     final response = await flutterwave.initializeForUiPayments().then((value) {
+       setState(() {loading = false;});
+     });
+
+     if(response != null){
+       {
+         popUpDialog(context);
+         print(response.data.status);}
+     }else{
+       Services().displayToast("Unable to complete Transaction");
+     }
+  }
+
+  popUpDialog(BuildContext context){
+    showDialog(context: context, builder: (context){
+      return Dialog(
+        elevation: 16,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: AppreciationWidget(),
+
+        ),
+      );
+    });
+  }
 }

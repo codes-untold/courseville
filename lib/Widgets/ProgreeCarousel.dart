@@ -45,10 +45,8 @@ class ProgressCarousel extends StatelessWidget {
     print(provider.updatedCourseResult);
     double counter =0;
 
-    for(int i =0; i < items.length;i++){
-
+    for(int i = 0; i < items.length;i++){
       for(int a = 0; a < (items[i]["courseprogress"] as List).length;a++){
-
         if(items[i]["courseprogress"][a]){
           counter++;
         }

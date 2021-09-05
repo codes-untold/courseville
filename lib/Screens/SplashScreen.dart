@@ -5,7 +5,6 @@ import 'package:courseville/Services/Listener.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Services.dart';
 import 'WelcomeScreen.dart';
 
@@ -85,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
              return NavigationScreen();
            }));
-         });
+         }).onError((error, stackTrace) =>Services().displayToast("Please check Internet connection"));
         });
       }
       else{
@@ -98,7 +97,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future <void> checkForNotifications(String user)async{
-    int noOfNotifications = 0;
 
     await FirebaseFirestore.instance.collection(user).doc("Notifications").
     collection("Notifications").orderBy("NotificationName",descending: false).get().then((value){
@@ -109,16 +107,12 @@ class _SplashScreenState extends State<SplashScreen> {
         provider.getNotifications(value.docs[i].data());
         provider.getNotificationIDs(value.docs[i].id);
 
-
         if(!value.docs[i].data()["HasReadNotification"]){
           provider.incrementNotificationCount();
         }else{
           provider.resetNotificationCount();
         }
       }
-      print("it is $noOfNotifications");
-      print(provider.notifications);
-
     });
   }
 }

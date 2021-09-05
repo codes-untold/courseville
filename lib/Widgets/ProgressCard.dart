@@ -1,9 +1,7 @@
 
-import 'package:courseville/Services/Listener.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'ChartWidget.dart';
+
 class ProgressCard extends StatelessWidget {
 
 
@@ -32,12 +30,12 @@ class ProgressCard extends StatelessWidget {
           children: [
             Expanded(child: Container(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(left: 15),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name,
+                    Text(name!=null?name:"",
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,

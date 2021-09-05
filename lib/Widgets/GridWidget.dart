@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Networking/Authentication.dart';
 import 'package:courseville/Networking/CourseFetch.dart';
+import 'package:courseville/Services.dart';
 import 'package:courseville/Widgets/CourseCards.dart';
 import 'package:courseville/Widgets/OopsWidget.dart';
 import 'package:flutter/material.dart';
@@ -30,54 +31,49 @@ class _GridWidgetState extends State<GridWidget> {
   @override
   void initState(){
     super.initState();
-    someFunction(widget.user).then((value) {
+    getUserData(widget.user).then((value) {
       fetch();
-    });
+    }).onError((error, stackTrace) => Services().displayToast("An error occured"));
 
   }
 
   fetch(){
 
     if(widget.searchTerm != null){
-      print("working fine");
       CourseFetch().searchFetch(widget.user,widget.searchTerm,context).then((value){
-
           setState(() {
             list = value;
           });
-
-      });
+      }).onError((error, stackTrace) =>  Services().displayToast("An error occured"));
     }
 
     else{
       switch(widget.category){
         case "all": CourseFetch().generalFetch(widget.user,widget.contextt).then((value){
-          print("vfmdfjgjfhihtidurhdirht");
           if(mounted){
             setState(() {
               list = value;
             });
           }
-        });
+        }).onError((error, stackTrace) =>  Services().displayToast("An error occured"));
         break;
-        case "popular": CourseFetch().popularFetch(widget.user,widget.contextt).then((value){
-          print(value);
-          if(mounted){
-            setState(() {
-              list = value;
-            });
-          }
 
-        });
-        break;
-        case "top": CourseFetch().topFetch(widget.user,widget.contextt).then((value){
-          print(value);
+        case "popular": CourseFetch().popularFetch(widget.user,widget.contextt).then((value){
           if(mounted){
             setState(() {
               list = value;
             });
           }
-        });
+        }).onError((error, stackTrace) =>  Services().displayToast("An error occured"));
+        break;
+
+        case "top": CourseFetch().topFetch(widget.user,widget.contextt).then((value){
+          if(mounted){
+            setState(() {
+              list = value;
+            });
+          }
+        }).onError((error, stackTrace) =>  Services().displayToast("An error occured"));
       }
     }
 
@@ -93,7 +89,7 @@ class _GridWidgetState extends State<GridWidget> {
   }
 
 
-  Future <void> someFunction(String user)async{
+  Future <void> getUserData(String user)async{
      await Authentication().addUser(user);
   }
 }

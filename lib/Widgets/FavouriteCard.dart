@@ -10,6 +10,7 @@ class FavouriteCard extends StatelessWidget {
   String user;
 
 
+
   FavouriteCard({this.queryDocumentSnapshot,this.index,this.user});
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class FavouriteCard extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 10,right: 10),
                             child: Row(
-                             // crossAxisAlignment: CrossAxisAlignment.start,
+
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Flexible(

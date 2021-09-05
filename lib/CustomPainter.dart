@@ -65,3 +65,38 @@ class RPSCustomPainter2 extends CustomPainter{
   }
 
 }
+
+class RPSCustomPainter extends CustomPainter{
+
+  @override
+  void paint(Canvas canvas, Size size) {
+
+
+
+    Paint paint_0 = new Paint()
+      ..color = Color.fromARGB(255, 69, 22, 99)
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 1;
+
+
+    Path path_0 = Path();
+    path_0.moveTo(0,size.height);
+    path_0.quadraticBezierTo(0,size.height*0.7750000,0,size.height*0.7000000);
+    path_0.quadraticBezierTo(size.width*-0.0025000,size.height*0.5505000,size.width*0.2500000,size.height*0.5500000);
+    path_0.quadraticBezierTo(size.width*0.6250000,size.height*0.5500000,size.width*0.7500000,size.height*0.5500000);
+    path_0.quadraticBezierTo(size.width*1.0025000,size.height*0.5510000,size.width,size.height*0.4500000);
+    path_0.lineTo(size.width,size.height);
+    path_0.lineTo(0,size.height);
+    path_0.close();
+
+    canvas.drawPath(path_0, paint_0);
+
+//Color.fromARGB(255, 69, 22, 99)
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+
+}

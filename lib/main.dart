@@ -1,16 +1,10 @@
 
-import 'package:courseville/Screens/AllCertificateScreen.dart';
 import 'package:courseville/Screens/NavigationScreen.dart';
-import 'package:courseville/Screens/ProfileScreen.dart';
 import 'package:courseville/Screens/SplashScreen.dart';
-import 'package:courseville/TestWidget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'Screens/HomeScreen.dart';
-import 'Screens/WelcomeScreen.dart';
 import 'Services/Listener.dart';
 
 Future <void> main()async {
@@ -23,13 +17,10 @@ Future <void> main()async {
     create:(context) => Data(),
     child: MaterialApp(
       routes: {
-        "/hommy":(context) => NavigationScreen(),
+        "/NavigationScreen":(context) => NavigationScreen(),
       },
-    // home: await getBoolToSF()? NavigationScreen(): WelcomeScreen(),
+
    home: SplashScreen(),
-    //  home: AllCertificateScreen(),
-
-
       debugShowCheckedModeBanner: false,
     ),
   ));

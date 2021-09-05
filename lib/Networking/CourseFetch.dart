@@ -6,10 +6,9 @@ import 'package:provider/provider.dart';
 
 class CourseFetch{
 
-  List <Map<String,dynamic>> list = [];
+
   List <Map<String,dynamic>> searchList = [];
-  bool state;
-  List <QueryDocumentSnapshot> lister = [];
+  List <QueryDocumentSnapshot> listOfDocuments  = [];
   List <bool> favList = [];
   List boolList = [];
   List courseNames = [];
@@ -17,9 +16,9 @@ class CourseFetch{
 
   Future <List <QueryDocumentSnapshot>> generalFetch(String user,BuildContext context)async{
       var value =   Provider.of<Data>(context,listen: false);
-      print("this is $user");
-   await FirebaseFirestore.instance.collection(user).get().then((querySnapshot){
+    await FirebaseFirestore.instance.collection(user).get().then((querySnapshot){
      boolList.clear();
+
      querySnapshot.docs.forEach((element) {
        if(element.data()["name"]!= null){
          getData(element);
@@ -28,33 +27,33 @@ class CourseFetch{
      });
      sendDataToProvider(value);
     });
-   return lister;
+   return listOfDocuments;  //fetching and returning list of All courses
+
   }
 
   Future <List <QueryDocumentSnapshot>> popularFetch(String user,BuildContext context)async{
     var value =   Provider.of<Data>(context,listen: false);
     await FirebaseFirestore.instance.collection(user).where("category",isEqualTo: "popular").get().then((querySnapshot){
-      list.clear();
 
       querySnapshot.docs.forEach((element) {
         getData(element);
       });
       sendDataToProvider(value);
     });
-    return lister;
+    return listOfDocuments;   //fetching and returning list of courses in Popular category
   }
 
   Future <List <QueryDocumentSnapshot>> topFetch(String user,BuildContext context)async{
     var value =   Provider.of<Data>(context,listen: false);
     await FirebaseFirestore.instance.collection(user).where("category",isEqualTo: "Top").get().then((querySnapshot){
-      list.clear();
+
       querySnapshot.docs.forEach((element) {
         getData(element);
 
       });
       sendDataToProvider(value);
     });
-    return lister;
+    return listOfDocuments;   //fetching and returning list of courses in Top category
   }
 
   Future <List <QueryDocumentSnapshot>> searchFetch(String user,String search,BuildContext context)async{
@@ -63,12 +62,12 @@ class CourseFetch{
       var value =   Provider.of<Data>(context,listen: false);
       querySnapshot.docs.forEach((element) {
         if(element.data()["name"]!= null){
-          lister.add(element);
+          listOfDocuments .add(element);
         }
 
       });
 
-     lister.removeWhere((element) {
+      listOfDocuments .removeWhere((element) {
        String data = (element.data()["name"]);
 
        if(!(data.toLowerCase().contains(search.toLowerCase())))
@@ -78,7 +77,7 @@ class CourseFetch{
        else{
          favList.add(element.data()["favourite"]);
          boolList.add(element.data()["coursevideo"]);
-         courseNames.add(element.data()["names"]);
+         courseNames.add(element.data()["name"]);
          courseImages.add(element.data()["image"]);
 
          return false;
@@ -86,16 +85,17 @@ class CourseFetch{
      });
       sendDataToProvider(value);
     });
-    return lister;
+    return listOfDocuments;   //fetching and returning list of courses that relates to string being searched for
   }
 
   void getData(QueryDocumentSnapshot element){
-    lister.add(element);
+    listOfDocuments.add(element);
     favList.add(element.data()["favourite"]);
     boolList.add(element.data()["coursevideo"]);
     courseNames.add(element.data()["name"]);
     courseImages.add(element.data()["image"]);
 
+    //fetching course data and assigning them to different lists - CourseNames,CourseImages,Favourites e.t.c
   }
 
   void sendDataToProvider(Data value){
@@ -103,9 +103,11 @@ class CourseFetch{
     value.addCourseBoolState(boolList);
     value.addCourseNames(courseNames);
     value.addCourseImages(courseImages);
-    value.getResults(lister);
-    value.getCompletedCourses(lister);
-    value.getStartedCourseNames(lister);
+    value.getResults(listOfDocuments );
+    value.getCompletedCourses(listOfDocuments);
+    value.getStartedCourseNames(listOfDocuments);
+
+    //Sending all fetched data to the provider class
 
   }
 

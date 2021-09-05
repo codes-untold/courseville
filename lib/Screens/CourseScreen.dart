@@ -26,15 +26,12 @@ class _CourseScreenState extends State<CourseScreen> {
   double WIDTH = 200;
   List <Widget> list = [];
   Color color;
+  var providerData;
 
 
   @override
   void initState() {
     super.initState();
-    print(widget.user);
-    print(widget.queryDocumentSnapshot.id);
-    print(widget.queryDocumentSnapshot.data()["image"]);
-
 
     for(Map<String,dynamic> lister in (widget.queryDocumentSnapshot.data()["coursevideo"] as List)){
       int i = 0;
@@ -47,13 +44,10 @@ class _CourseScreenState extends State<CourseScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    var providerData = Provider.of<Data>(context,listen: false);
-    if(providerData.favourite[widget.courseScreenIndex]){
-    color = Colors.amber;
-    }
-    else{
-    color = Colors.white;
-    }
+    providerData = Provider.of<Data>(context,listen: false);
+    if(providerData.favourite[widget.courseScreenIndex]){color = Colors.amber;}
+
+    else{color = Colors.white;}
   }
   @override
   Widget build(BuildContext context) {
@@ -85,7 +79,8 @@ class _CourseScreenState extends State<CourseScreen> {
                     children: [
                       Row(
                         children: [
-                          Text("By Leo Natsume",
+                          Text(widget.queryDocumentSnapshot.data()["author"] != null ?
+                         "By ${widget.queryDocumentSnapshot.data()["author"]}": "By Anonymous",
                             style: TextStyle(
                               // color: Colors.white
                             ),),
@@ -189,6 +184,7 @@ class _CourseScreenState extends State<CourseScreen> {
           ),
         )
       ),
+
    floatingActionButton: Visibility(
      visible: widget.canHandleFavouriteOperations,
      child: Consumer<Data>(
@@ -199,20 +195,14 @@ class _CourseScreenState extends State<CourseScreen> {
                color = Colors.white;
                data.UpdateFavouriteList(widget.courseScreenIndex, false);
                Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Removed from Favourites•☹️",context);
-               await FirebaseFirestore.instance.collection(
-                   widget.user).doc(
-                   widget.queryDocumentSnapshot.id
-               ).update({"favourite": false});
+               await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).update({"favourite": false});
              }
 
              else{
                color = Colors.amber;
                data.UpdateFavouriteList(widget.courseScreenIndex, true);
                Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Added to Favourites😀",context);
-               await FirebaseFirestore.instance.collection(
-                   widget.user).doc(
-                   ( widget.queryDocumentSnapshot.id)
-               ).update({"favourite": true});
+               await FirebaseFirestore.instance.collection(widget.user).doc((widget.queryDocumentSnapshot.id)).update({"favourite": true});
              }
            },
            backgroundColor: Color.fromARGB(255, 69, 22, 99),
@@ -229,21 +219,17 @@ class _CourseScreenState extends State<CourseScreen> {
     if ( color == Colors.white) {
       setState(() {
         color = Colors.amber;
-        print("on");
       });
-      Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Added to Favourites😀",context);
-      await FirebaseFirestore.instance.collection(
-          widget.user).doc(
-          ( widget.queryDocumentSnapshot.id)
-      ).update({"favourite": true});
 
+      Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Added to Favourites😀",context);
+      await FirebaseFirestore.instance.collection(widget.user).doc((widget.queryDocumentSnapshot.id)).update({"favourite": true});
     }
 
     else {
       setState(() {
         color = Colors.white;
-        print("off");
       });
+
       Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Removed from Favourites•☹️",context);
 
       await FirebaseFirestore.instance.collection(

@@ -50,9 +50,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         items: <BottomNavigationBarItem>
         [BottomNavigationBarItem(icon: Icon(Icons.home,size: 20.0,),label: "home",backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.favorite,size: 20.0,),label: "favourite"),
-          BottomNavigationBarItem(icon: Consumer<Data>(
-    builder:(context,data,_){
-      print("it has to be ${data.notificationCount}");
+          BottomNavigationBarItem(icon: Consumer<Data>(builder:(context,data,_){
       return icon(Provider.of<Data>(context,listen: false).notificationCount);
     }
           ),label: "notification"),

@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:courseville/Services.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/CourseVideoList.dart';
 import 'package:courseville/Widgets/MoreeWidget.dart';
@@ -22,6 +23,7 @@ class CourseVideoScreen extends StatefulWidget {
 }
 
 class _CourseVideoScreenState extends State<CourseVideoScreen> {
+
   int currentVideoID = 0;
   bool _isPlayerReady = false;
   PlayerState playerState;
@@ -29,6 +31,7 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
   List <Widget> kTabPages;
   YoutubePlayerController youtubePlayerController;
   Data provider;
+  var documentData;
 
 
 
@@ -36,7 +39,9 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
   void initState(){
     super.initState();
     provider = Provider.of<Data>(context,listen: false);
-WidgetsBinding.instance.addPostFrameCallback((_) {
+    documentData = widget.queryDocumentSnapshot.data();
+    if(documentData == null){Services().displayToast("An error occured");}
+    WidgetsBinding.instance.addPostFrameCallback((_) {
   initiateCourseData().then((value) => null);
 });
   }
@@ -47,7 +52,8 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
   Widget build(BuildContext context) {
 
     youtubePlayerController = YoutubePlayerController(initialVideoId:
-    widget.queryDocumentSnapshot.data()["coursevideo"][Provider.of<Data>(context,listen: false).videoID]["videoid"],
+    documentData["coursevideo"][provider.videoID]["videoid"],
+
         flags: YoutubePlayerFlags(autoPlay: false, forceHD: true))..addListener(() {
           if(_isPlayerReady == true){
            playerState =  youtubePlayerController.value.playerState;
@@ -79,14 +85,13 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
                 child: Consumer<Data>(
                   builder: (context,data,_){
                       youtubePlayerController.load(
-                        widget.queryDocumentSnapshot.data()
-                        ["coursevideo"][data.videoID]["videoid"],
+                       documentData["coursevideo"][data.videoID]["videoid"],
                       );
                     return YoutubePlayer(
                       onReady: (){
                         _isPlayerReady = true;
-                        print("reeeaaadddyyy");
-                      }, controller: youtubePlayerController,
+                      },
+                      controller: youtubePlayerController,
                       showVideoProgressIndicator: true,
                       progressIndicatorColor: Color.fromARGB(255, 69, 22, 99),
                     );
@@ -100,13 +105,13 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
                   crossAxisAlignment: CrossAxisAlignment.start,
 
                 children: [
-                  Text(widget.queryDocumentSnapshot.data()["name"],
+                  Text(documentData["name"],
                     style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w600
                     ),),
                   SizedBox(height: 5,),
-                  Text("Bryan Cairns",style: TextStyle(
+                  Text(documentData["author"],style: TextStyle(
                       color: Colors.grey[800]
                   ),),
                   SizedBox(height: 5,),
@@ -119,9 +124,6 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
                     labelStyle: TextStyle(
                       //   fontSize: 16
                     ),),
-
-                  //SizedBox(height: 20,),
-
 
                 ],
                 ),
@@ -154,39 +156,34 @@ WidgetsBinding.instance.addPostFrameCallback((_) {
   }
 
   Future <void> initiateCourseData()async{
-    var value = Provider.of<Data>(context,listen: false);
-    Map<String,dynamic> courseNotification =  {"NotificationImage":widget.queryDocumentSnapshot.data()["image"],
-      "NotificationMessage":"Hey ${provider.username}, you just started the course on ${widget.queryDocumentSnapshot.data()["name"]}",
+
+    Map<String,dynamic> courseNotification =  {"NotificationImage":documentData["image"],
+      "NotificationMessage":"Hey ${provider.username}, you just started the course on ${documentData["name"]}",
       "NotificationName":DateTime.now().millisecondsSinceEpoch.toString(),
       "HasReadNotification": false};
 
+            if(!provider.startedCourseNames.contains(documentData["name"])){
+              provider.addCourseResult(documentData["name"], documentData["image"],
+                  (documentData["coursevideo"] as List).length);
 
-
-
-            if(!provider.startedCourseNames.contains(widget.queryDocumentSnapshot.data()["name"])){
-              value.addCourseResult(widget.i, (widget.queryDocumentSnapshot.data()["coursevideo"] as List).length);
               await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
               update({"hasStartedCourse": true}).then((value){
-                provider.updateStartedCourseNames(widget.queryDocumentSnapshot.data()["name"]);
+                provider.updateStartedCourseNames(documentData["name"]);
               });
 
               await FirebaseFirestore.instance.collection(widget.user).doc("Notifications").collection("Notifications").doc(
                   widget.queryDocumentSnapshot.id
               ).set(
-                  {"NotificationImage": widget.queryDocumentSnapshot.data()["image"],
-                    "NotificationMessage":"Hey ${provider.username}, You just Started the course on ${widget.queryDocumentSnapshot.data()["name"]}",
+                  {"NotificationImage": documentData["image"],
+                    "NotificationMessage":"Hey ${provider.username}, You just Started the course on ${documentData["name"]}",
                     "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),
                     "HasReadNotification": false}).then((value) {
+
                 provider.getNotifications(courseNotification);
                 provider.getNotificationIDs(widget.queryDocumentSnapshot.id);
                 provider.incrementNotificationCount();
               });
             }
-
-
-    //print(Provider.of<Data>(context,listen: false).updatedCourseResult);
-
   }
-
 
 }

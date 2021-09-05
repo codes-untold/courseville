@@ -2,9 +2,7 @@ import 'package:courseville/Widgets/HomeWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:ui' as ui;
-
-
+import '../CustomPainter.dart';
 import 'LoginScreen.dart';
 
 
@@ -13,14 +11,15 @@ class WelcomeScreen extends StatelessWidget {
   List <Widget> item = [HomeOne(),HomeTwo(),HomeThree()];
   int currentPos = 0;
   CarouselController buttonCarouselController = CarouselController();
-  double value;
-
+  double screenHeight;
+  double screenWidth;
   double WIDTH =1000;
+
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.height);
-    print(MediaQuery.of(context).size.width);
-    value = MediaQuery.of(context).size.height;
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -28,11 +27,11 @@ class WelcomeScreen extends StatelessWidget {
           children: [
             Container(
               child: CustomPaint(
-                size: Size(WIDTH,(WIDTH*2.5).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                size: Size(WIDTH,(WIDTH*2.5).toDouble()),
                 painter: RPSCustomPainter(),
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height:MediaQuery.of(context).size.height ,
+                  width: screenWidth,
+                  height:screenHeight,
                 ),
               ),
             ),
@@ -44,7 +43,7 @@ class WelcomeScreen extends StatelessWidget {
                     carouselController: buttonCarouselController,
                     items: item,
                     options: CarouselOptions(
-                        height: value,
+                        height: screenHeight,
                         aspectRatio: 16/9,
                         viewportFraction: 0.9,
                         initialPage: 0,
@@ -97,42 +96,6 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
-
-class RPSCustomPainter extends CustomPainter{
-
-  @override
-  void paint(Canvas canvas, Size size) {
-
-
-
-    Paint paint_0 = new Paint()
-      ..color = Color.fromARGB(255, 69, 22, 99)
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 1;
-
-
-    Path path_0 = Path();
-    path_0.moveTo(0,size.height);
-    path_0.quadraticBezierTo(0,size.height*0.7750000,0,size.height*0.7000000);
-    path_0.quadraticBezierTo(size.width*-0.0025000,size.height*0.5505000,size.width*0.2500000,size.height*0.5500000);
-    path_0.quadraticBezierTo(size.width*0.6250000,size.height*0.5500000,size.width*0.7500000,size.height*0.5500000);
-    path_0.quadraticBezierTo(size.width*1.0025000,size.height*0.5510000,size.width,size.height*0.4500000);
-    path_0.lineTo(size.width,size.height);
-    path_0.lineTo(0,size.height);
-    path_0.close();
-
-    canvas.drawPath(path_0, paint_0);
-
-//Color.fromARGB(255, 69, 22, 99)
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-
-}
-
 
 class HomeOne extends StatelessWidget {
   @override

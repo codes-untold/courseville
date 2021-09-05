@@ -1,11 +1,9 @@
 import 'package:courseville/Networking/Authentication.dart';
-import 'package:courseville/Screens/HomeScreen.dart';
 import 'package:courseville/Screens/RegistrationScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../CustomPainter.dart';
 import 'ForgotScreen.dart';
 

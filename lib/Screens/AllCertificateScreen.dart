@@ -31,16 +31,14 @@ class _AllCertificateScreenState extends State<AllCertificateScreen> {
   GlobalKey key1;
   Uint8List bytes1;
   Services services = Services();
+  double screenHeight,screenWidth;
 
 
 
   void _onScroll() {
-
     if (_pageController.page.toInt() != prevPage) {
       prevPage = _pageController.page.toInt();
       setState(() {courseIndex = _pageController.page.toInt();});
-
-
     }
   }
 
@@ -50,24 +48,19 @@ class _AllCertificateScreenState extends State<AllCertificateScreen> {
     _pageController = PageController(initialPage: 0, viewportFraction: 0.8)..addListener(_onScroll);
     provider = Provider.of<Data>(context,listen: false);
     numberOfCourses = provider.completedCourses.length;
-    print(provider.completedCourses[courseIndex]);
   }
 
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.grey[300],
         body: Stack(
           children: <Widget>[
             Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height - 50.0,
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              height: screenHeight- 50.0,
+              width: screenWidth,
               child: Center(child: WidgetToImage(
                 builder: (key){
                   this.key1 = key;
@@ -164,7 +157,7 @@ class _AllCertificateScreenState extends State<AllCertificateScreen> {
                             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16.0),topLeft: Radius.circular(16.0)),
                             child: CachedNetworkImage(
                               imageUrl: provider.completedCourses[index]["courseimage"],
-                              placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.3,
+                              placeholder: (context,url) => Icon(Icons.auto_stories,size: screenWidth *0.3,
                                 color: Colors.black12,),
                             ),
                           ),
@@ -200,14 +193,13 @@ class _AllCertificateScreenState extends State<AllCertificateScreen> {
 
   void exportCertificate()async{
     final bytes1 = await Utils.capture(key1);
-    print(bytes1);
+
     Directory documentDirectory = await getExternalStorageDirectory();
     new Directory(documentDirectory.path).create(recursive: true).then((Directory directory) async{
       File file = await new File("${directory.path}/${ provider.completedCourses[courseIndex]["coursename"]}.jpg").create(recursive: true);
       await file.writeAsBytes(bytes1).then((value) {
         services.displayToast("Saved to ${directory.path}/");
-      })
-          .onError((error, stackTrace){ services.displayToast("An error occured");});
+      }).onError((error, stackTrace){ services.displayToast("An error occured");});
 
     });
 

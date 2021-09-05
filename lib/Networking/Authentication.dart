@@ -9,6 +9,7 @@ import 'package:courseville/Services/Listener.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Authentication{
   final _auth = FirebaseAuth.instance;
@@ -129,7 +130,6 @@ Future <void> createUser(username,email,password)async{
     var res = await FirebaseFirestore.instance.doc("$user/${user}1").get();
 
     if (res.exists) {
-      print("exists");
       await FirebaseFirestore.instance.collection("Admin").get().then((
           QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((element) async {
@@ -154,7 +154,6 @@ Future <void> createUser(username,email,password)async{
     }
 
     else {
-      print("doesnt exist");
       await FirebaseFirestore.instance.collection("Admin").get().then((
           QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((element) async {
@@ -169,6 +168,17 @@ Future <void> createUser(username,email,password)async{
       });
       return true;
     }
+  }
+
+ Future <void> signOut()async{
+
+    await _auth.signOut().then((value)async{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setBool("boolvalue", false);
+
+    }).onError((error, stackTrace){
+      Services().displayToast("An error occured");
+    });
   }
 }
 

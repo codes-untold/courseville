@@ -27,8 +27,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
     super.initState();
     provider = Provider.of<Data>(context,listen: false);
     list = provider.notifications;
-    print(list);
-
 
     for(int i = 0;i < list.length; i++){
       listTile?.add(NotificationTile(notificationImage: list[i]["NotificationImage"],
@@ -36,7 +34,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       list[i].update("HasReadNotification", (value) =>true);
     }
 
-    print(list);
     Services().getBoolToSF().then((value) {
       user = value[0];
      updateNotification();
@@ -79,10 +76,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   void updateNotification(){
    List notificationIds =  provider.notificationIDs;
-   print(list.length);
-   print(list.length);
-   print(list.length);
-   print(list.length);
 
    for(int i = 0; i< list.length; i++){
         FirebaseFirestore.instance.collection(user).doc("Notifications").
@@ -90,10 +83,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
        print(notificationIds[i]);
       }
 
-   /*for(int i = 0; i< list.length; i++){
-     FirebaseFirestore.instance.collection(user).doc("Notifications").
-     collection("Notifications").doc(notificationIds[i]).set(list[i]);
-   }*/
   }
 }
 

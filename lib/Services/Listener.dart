@@ -43,7 +43,7 @@ class Data extends ChangeNotifier{
         startedCourseNames.add(list[i].data()["name"]);
       }
     }
-    print("jnsiubuiuidrgihgihgieg");
+
     notifyListeners();
   }
 
@@ -63,11 +63,6 @@ class Data extends ChangeNotifier{
     userInfo = user;
     notifyListeners();
   }
-
-void updateSearch(String search){
-    searchTerm = search;
-    notifyListeners();
-}
 
   void addFavouriteList(List fav){
     favourite = fav;
@@ -107,14 +102,14 @@ void updateSearch(String search){
     notifyListeners();
   }
 
-  void addCourseResult(int index,int length){
+  void addCourseResult(String name,String image,int length){
     updatedCourseResult.add({
-      "coursename": courseNames[index],
-      "courseimage": courseImages[index],
+      "coursename": name,
+      "courseimage": image,
       "courseprogress": fillBoolState(length)
     });
     notifyListeners();
-    print(updatedCourseResult);
+
   }
 
   void addCertificates(String name){
@@ -135,7 +130,7 @@ void updateSearch(String search){
       }
     }
     notifyListeners();
-    print(updatedCourseResult);
+
   }
 
   void addCompletedCourses(QueryDocumentSnapshot queryDocumentSnapshot){
@@ -206,8 +201,6 @@ void updateSearch(String search){
   void getNotifications(Map<String,dynamic> map){
     notifications.insert(0, map);
     notifyListeners();
-    print(notifications);
-    print("stuff");
   }
 
   void getNotificationIDs(String value){

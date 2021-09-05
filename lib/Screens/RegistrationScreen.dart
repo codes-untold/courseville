@@ -12,15 +12,18 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+
   double WIDTH =1000;
   bool _obscureText1 = true;
   bool loading = false;
   String username;
   String email;
   String password;
+  double screenHeight;
+  double screenWidth;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  void toggle1(){
+  void togglePasswordVisibility(){
     setState(() {
       if(_obscureText1){
         _obscureText1 = false;
@@ -34,6 +37,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -46,8 +51,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 size: Size(WIDTH,(WIDTH*2.5).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
                 painter: RPSCustomPainter2(),
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height:MediaQuery.of(context).size.height ,
+                  width: screenWidth,
+                  height: screenHeight ,
                 ),
               ),
             ),
@@ -176,10 +181,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     filled: true,
                                     prefixIcon: Icon(Icons.lock,color: Colors.black,),
                                     suffixIcon: IconButton(
-                                           onPressed: (){
-                                             toggle1();
-
-                                           },
+                                           onPressed: togglePasswordVisibility,
                                       icon: Icon(_obscureText1 == true? Icons.visibility_off:Icons.visibility),
                                     ),
                                     border: OutlineInputBorder(
@@ -193,7 +195,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                           Flexible(
                             child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.0625,
+                              height: screenHeight * 0.0625,
                             ),
                           ),
                           Flexible(
@@ -258,12 +260,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
             ),
             Positioned(
-              left:  MediaQuery.of(context).size.height * 0.025,
-              top: MediaQuery.of(context).size.height * 0.0938,
+              left:  screenHeight * 0.025,
+              top: screenHeight * 0.0938,
               child: IconButton(
                 icon: Icon(Icons.arrow_back_ios),
                 onPressed: (){Navigator.pop(context);},
-
               ),
             ),  ],
         ),

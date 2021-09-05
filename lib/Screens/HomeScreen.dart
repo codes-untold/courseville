@@ -1,4 +1,4 @@
-import 'package:courseville/Networking/Authentication.dart';
+
 import 'package:courseville/Screens/SearchScreen.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/GridWidget.dart';
@@ -18,13 +18,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   String searchTerm;
   List <Widget> kTabPages;
   TabController tabController;
-  String  user;
+  String user;
   Data userData;
   bool dataFetch = false;
   bool hasLoaded = false;
 
   final ktabs = <Tab>[Tab(child: Text("All"),),Tab(child: Text("Popular"),),Tab(child: Text("Top"),),];
-
 
 
       @override
@@ -42,9 +41,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     Services().getBoolToSF().then((value) {
       setState(() {
         user = userData?.userInfo?.uid ?? value[0];
-        print("this is the real $user");
         userData.updateText(userData?.userInfo?.displayName ?? value[1]);
-        //Authentication().addUser(user).then((_){});
+
 
       });
     });
@@ -82,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                    Icons.apps_outlined,
                                    color: Colors.white,
                                  ),
-                                 onTap: () => Navigator.popAndPushNamed(context,'/hommy'),
+                                 onTap: () => Navigator.popAndPushNamed(context,'/NavigationScreen'),
                                ),
                                GestureDetector(
                                  onTap: ()async{

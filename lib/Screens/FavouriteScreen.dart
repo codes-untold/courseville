@@ -36,11 +36,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     /* appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 69, 22, 99),
-        title: Text("Favourites"),
-        centerTitle: true,
-      ),*/
+
           body: SafeArea(
             child: Stack(
               children: [
@@ -58,22 +54,26 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   padding: EdgeInsets.all(16),
                   child:  user==null?  CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 69, 22, 99)))
                       : PaginateFirestore(
+                    initialLoader: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 69, 22, 99)))),
+                      emptyDisplay:Center(child: Text("You have no Favourites yet!")),
                       onError: (e){
                         Services().displayToast("An error occured");
                         return null;
                       },
-
                       itemsPerPage: 1,
                       itemBuilderType: PaginateBuilderType.listView,
                       itemBuilder: (index,context,documentsnapshot){
-// Color(0xffa450f8)
-                        return Column(
-                          children: [
-                            FavouriteCard(queryDocumentSnapshot: documentsnapshot,index: index,user: user,),
-                            SizedBox(
-                              height: 10,
-                            ) ],
-                        );
+
+
+                          return Column(
+                            children: [
+                              FavouriteCard(queryDocumentSnapshot: documentsnapshot,index: index,user: user,),
+                              SizedBox(
+                                height: 10,
+                              ) ],
+                          );
+
+
                       },
                       query: FirebaseFirestore.instance.collection(user).where("favourite",isEqualTo: true)
                   ),

@@ -25,7 +25,7 @@ class CourseIntro extends StatelessWidget {
         children: [
           Container(
             child: CustomPaint(
-              size: Size(WIDTH,(WIDTH*2.5).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+              size: Size(WIDTH,(WIDTH*2.5).toDouble()),
               painter: RPSCustomPainter2(),
               child: Container(
                 width: MediaQuery.of(context).size.width,

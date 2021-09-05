@@ -4,12 +4,11 @@ import 'package:courseville/Services.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import 'CongratsWidget.dart';
 
 class MorreWidget extends StatelessWidget {
 
-  QueryDocumentSnapshot queryDocumentSnapshot;
-  YoutubePlayerController youtubePlayerController;
+  final queryDocumentSnapshot;
+  final youtubePlayerController;
 
   MorreWidget({this.queryDocumentSnapshot,this.youtubePlayerController});
   @override
@@ -42,8 +41,7 @@ class MorreWidget extends StatelessWidget {
           ),
           GestureDetector(
             onTap: (){
-              Services services = Services();
-              services.shareCourse(
+              Services().shareCourse(
                   about: aboutCourse(queryDocumentSnapshot.data()["name"]),
                   context: context,
                   imageUrl: queryDocumentSnapshot.data()["image"]
@@ -69,16 +67,4 @@ class MorreWidget extends StatelessWidget {
         "Get it on Playstore Now!!!";
   }
 
-  dialogFunction(BuildContext context){
-    showDialog(context: context, builder: (context){
-      return Dialog(
-        elevation: 16,
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.7,
-          child: CongratsWidget(),
-
-        ),
-      );
-    });
-  }
 }

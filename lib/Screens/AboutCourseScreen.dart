@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 class AboutCourseScreen extends StatelessWidget {
 
   QueryDocumentSnapshot queryDocumentSnapshot;
+  var documentData;
 
   AboutCourseScreen({this.queryDocumentSnapshot});
 
   @override
   Widget build(BuildContext context) {
+    documentData = queryDocumentSnapshot.data();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -22,12 +24,12 @@ class AboutCourseScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20,),
-            Text(queryDocumentSnapshot.data()["name"],style: TextStyle(
+            Text(documentData["name"],style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w700
             ),),
             SizedBox(height: 10,),
-            Text(queryDocumentSnapshot.data()["description"],style:TextStyle(
+            Text(documentData["description"],style:TextStyle(
               fontSize: 15,
               height: 1.35
             ),),

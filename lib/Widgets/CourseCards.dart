@@ -15,6 +15,8 @@ class CourseCard extends StatefulWidget {
   int cardindex;
   int totalCards;
 
+
+
   CourseCard({@required this.querySnapshot,this.user,this.cardindex,this.totalCards});
 
   @override
@@ -23,21 +25,23 @@ class CourseCard extends StatefulWidget {
 
 class _CourseCardState extends State<CourseCard> {
 
-  IconData icon;
+  var providerData;
+
 
   @override
   void initState() {
     super.initState();
-
+    providerData = Provider.of<Data>(context,listen: false);
   }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     context.dependOnInheritedWidgetOfExactType();
   }
+
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context){
@@ -99,7 +103,7 @@ class _CourseCardState extends State<CourseCard> {
                          ],
                        ),
                    GestureDetector(
-                     onTap: work,
+                     onTap: updateFavouriteIcon,
                      child: Consumer<Data>(
                        builder:(context,data,child){
                          return Icon(!(data.favourite.length < widget.totalCards)?
@@ -116,25 +120,18 @@ class _CourseCardState extends State<CourseCard> {
       ),
     );
   }
-  void work()async{
-      var providerData = Provider.of<Data>(context,listen: false);
-    if ( providerData.favourite[widget.cardindex] == false) {
+  void updateFavouriteIcon()async{
+
+    if (providerData.favourite[widget.cardindex] == false) {
       providerData.UpdateFavouriteList(widget.cardindex, true);
       Services().showInSnackBar("${widget.querySnapshot.data()["name"]} Added to Favourites😀",context);
-      await FirebaseFirestore.instance.collection(
-          widget.user).doc(
-          ( widget.querySnapshot.id)
-      ).update({"favourite": true});
-
+      await FirebaseFirestore.instance.collection(widget.user).doc((widget.querySnapshot.id)).update({"favourite": true});
     }
 
     else {
      providerData.UpdateFavouriteList(widget.cardindex, false);
       Services().showInSnackBar("${widget.querySnapshot.data()["name"]} Removed from Favourites•☹",context);
-      await FirebaseFirestore.instance.collection(
-          widget.user).doc(
-          widget.querySnapshot.id
-      ).update({"favourite": false});
+      await FirebaseFirestore.instance.collection(widget.user).doc(widget.querySnapshot.id).update({"favourite": false});
     }
   }
 
