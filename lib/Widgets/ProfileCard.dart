@@ -37,7 +37,7 @@ class ProfileCard extends StatelessWidget {
 
               Expanded(
                   flex: 1,
-                  child: IconButton(icon: Icon(Icons.arrow_forward_ios,size: 12,), onPressed: (){}))
+                  child: IconButton(icon: Icon(Icons.arrow_forward_ios,size: 12,), onPressed: null))
             ],
           ),
         ),
