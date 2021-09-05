@@ -4,6 +4,8 @@ A new Flutter application.
 
 ## About
 
+An ongoing flutter educational application project being developed to offer users video courses, track user progress and generate certifications for users on completion of course
+
 ![alt text](https://firebasestorage.googleapis.com/v0/b/courseville-95146.appspot.com/o/courseville1.png?alt=media&token=33cc56e4-f907-4e50-92fd-dcbc8bf44518)
 
 
