@@ -8,7 +8,7 @@ import 'package:courseville/Widgets/CourseListTile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Services.dart';
-import 'CourseVideoScreen.dart';
+
 
 class CourseScreen extends StatefulWidget {
   QueryDocumentSnapshot queryDocumentSnapshot;

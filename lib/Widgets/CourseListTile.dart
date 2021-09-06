@@ -30,7 +30,7 @@ class CourselistTile extends StatelessWidget {
         //    contentPadding: EdgeInsets.only(bottom: 3),
             leading:  CachedNetworkImage(
               imageUrl: queryDocumentSnapshot.data()["image"],
-              placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.3,
+              placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.1,
                 color: Colors.black12,),
             ),
             title: Text(list["videoname"],

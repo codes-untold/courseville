@@ -157,7 +157,7 @@ class _AllCertificateScreenState extends State<AllCertificateScreen> {
                             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16.0),topLeft: Radius.circular(16.0)),
                             child: CachedNetworkImage(
                               imageUrl: provider.completedCourses[index]["courseimage"],
-                              placeholder: (context,url) => Icon(Icons.auto_stories,size: screenWidth *0.3,
+                              placeholder: (context,url) => Icon(Icons.auto_stories,size: screenWidth *0.1,
                                 color: Colors.black12,),
                             ),
                           ),

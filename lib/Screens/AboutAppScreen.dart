@@ -60,7 +60,7 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                             ),),
                             SizedBox(height: 10,),
 
-                            Text("Courseville offers you a seamless learning experience"
+                             Text("Courseville offers you a seamless learning experience"
                                 " by presenting to you a variety of curated videos in the"
                                 " order of their complexity to give you better understanding"
                                 " in your course area."),

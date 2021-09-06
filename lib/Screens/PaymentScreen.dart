@@ -263,7 +263,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
      acceptUSSDPayment: true);
 
      final response = await flutterwave.initializeForUiPayments().then((value) {
-       setState(() {loading = false;});
+       setState(() {loading = false;
+       nameController.clear();
+       emailController.clear();
+       phoneController.clear();
+       amountController.clear();
+       });
      });
 
      if(response != null){
