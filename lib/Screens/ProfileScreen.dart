@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     provider = Provider.of<Data>(context,listen: false);
-    hasStartedCourse =  provider.updatedCourseResult.isEmpty;
+    hasStartedCourse =  provider.updatedCourseProgress.isEmpty;
     noOfCompletedCourses = provider.completedCourses.length;
     username = provider.username;
   }

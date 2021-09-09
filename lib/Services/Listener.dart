@@ -5,6 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
+//The class is the brain of the entire app
+
+//It listens for changes in different areas of the app
+//It listens for new notifications,started courses,completed courses,
+//
 class Data extends ChangeNotifier{
 
 
@@ -14,23 +19,22 @@ class Data extends ChangeNotifier{
   List <bool> favourite= [];
   int videoID =0;
   List isCourseComplete = [];
-  List courseNames = [];
-  List courseImages= [];
   List generalList = [];
-  int notificationCount = 0;
-  List<Map<String,dynamic>> updatedCourseResult = [];
-  List<Map<String,dynamic>> completedCourses = [];
-  List<Map<String,dynamic>> notifications = [];
-  List <String> notificationIDs = [];
-  List <String> startedCourseNames = [];
+  int notificationCount = 0;                                          //a Counter for number of unread notifications
+  List<Map<String,dynamic>> updatedCourseProgress = [];              //List of updated course progress for all courses
+  List<Map<String,dynamic>> completedCourses = [];                 //List of completed courses as maps
+  List<Map<String,dynamic>> notifications = [];                    //List of Notifications as maps from Firebase
+  List <String> notificationIDs = [];                             //List of notificationIDs from firebase
+  List <String> startedCourseNames = [];                          //List of courses which the user has started
 
 
 
-
+  //updates the display username to be used across entire app
   void updateText(String text){
     username = text;
     notifyListeners();
   }
+
 
   void updateStartedCourseNames(String name){
     startedCourseNames.add(name);
@@ -91,19 +95,9 @@ class Data extends ChangeNotifier{
     notifyListeners();
   }
 
-  void addCourseNames(List list){
-    courseNames = list;
-    notifyListeners();
-
-  }
-
-  void addCourseImages(List list){
-    courseImages = list;
-    notifyListeners();
-  }
 
   void addCourseResult(String name,String image,int length){
-    updatedCourseResult.add({
+    updatedCourseProgress.add({
       "coursename": name,
       "courseimage": image,
       "courseprogress": fillBoolState(length)
@@ -113,9 +107,9 @@ class Data extends ChangeNotifier{
   }
 
   void addCertificates(String name){
-    for(int i = 0;i < updatedCourseResult.length;i++){
-      if(updatedCourseResult[i].containsValue(name)){
-       completedCourses.add(updatedCourseResult[i]);
+    for(int i = 0;i < updatedCourseProgress.length;i++){
+      if(updatedCourseProgress[i].containsValue(name)){
+       completedCourses.add(updatedCourseProgress[i]);
       }
     }
 
@@ -124,9 +118,9 @@ class Data extends ChangeNotifier{
 
   void updateCourseResult(String name,List <bool> list){
 
-    for(int i = 0;i < updatedCourseResult.length;i++){
-      if(updatedCourseResult[i].containsValue(name)){
-        updatedCourseResult[i]..update("courseprogress", (value) => list);
+    for(int i = 0;i < updatedCourseProgress.length;i++){
+      if(updatedCourseProgress[i].containsValue(name)){
+        updatedCourseProgress[i]..update("courseprogress", (value) => list);
       }
     }
     notifyListeners();
@@ -144,9 +138,9 @@ class Data extends ChangeNotifier{
     }
 
     else{
-      for(int i = 0;i < updatedCourseResult.length;i++){
-        if(updatedCourseResult[i].containsValue(queryDocumentSnapshot.data()["name"])){
-          completedCourses.add(updatedCourseResult[i]);
+      for(int i = 0;i < updatedCourseProgress.length;i++){
+        if(updatedCourseProgress[i].containsValue(queryDocumentSnapshot.data()["name"])){
+          completedCourses.add(updatedCourseProgress[i]);
         }
       }
     }
@@ -170,10 +164,10 @@ class Data extends ChangeNotifier{
   }
 
   void getResults(List <QueryDocumentSnapshot> list){
-    if(updatedCourseResult.isEmpty){
+    if(updatedCourseProgress.isEmpty){
       for(int i = 0; i < list.length;i++){
         if(list[i].data()["hasStartedCourse"]){
-          updatedCourseResult.add({
+          updatedCourseProgress.add({
             "coursename": list[i].data()["name"],
             "courseimage": list[i].data()["image"],
             "courseprogress": loopBoolList(list[i].data()["coursevideo"])

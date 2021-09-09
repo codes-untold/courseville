@@ -87,7 +87,7 @@ class CourseFetch{
     });
     return listOfDocuments;   //fetching and returning list of courses that relates to string being searched for
   }
-
+//fetching course data and assigning them to different lists - CourseNames,CourseImages,Favourites e.t.c
   void getData(QueryDocumentSnapshot element){
     listOfDocuments.add(element);
     favList.add(element.data()["favourite"]);
@@ -95,20 +95,69 @@ class CourseFetch{
     courseNames.add(element.data()["name"]);
     courseImages.add(element.data()["image"]);
 
-    //fetching course data and assigning them to different lists - CourseNames,CourseImages,Favourites e.t.c
+
   }
 
+  //Sending all fetched data to the provider class
   void sendDataToProvider(Data value){
     value.addFavouriteList(favList);
     value.addCourseBoolState(boolList);
-    value.addCourseNames(courseNames);
-    value.addCourseImages(courseImages);
     value.getResults(listOfDocuments );
     value.getCompletedCourses(listOfDocuments);
     value.getStartedCourseNames(listOfDocuments);
 
-    //Sending all fetched data to the provider class
+
 
   }
 
+  //fetches existing user data from firebase fireStore or creates if not existing
+  Future <bool> getUserData(String user) async {
+    Map<String, dynamic> map;
+    int count= 0;
+    var res = await FirebaseFirestore.instance.doc("$user/${user}1").get();
+
+    if (res.exists) {
+      //if user document already exists, fetch documents from general list of courses
+      //to add new courses to exisiting user's collection
+      await FirebaseFirestore.instance.collection("Admin").get().then((
+          QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((element) async {
+          map = element.data();
+          //Remove user specific fields to avoid overiding fields in user documents
+          map.removeWhere((key, value) => key == "favourite");
+          map.removeWhere((key, value) => key == "coursevideo");
+          map.removeWhere((key, value) => key == "hasStartedCourse");
+          map.removeWhere((key, value) => key == "hasEndedCourse");
+
+
+
+          count++;
+          await FirebaseFirestore.instance.collection(user).doc("$user$count")
+              .update(map).then((value) {})
+              .onError((error, stackTrace) {
+            print(error);
+          });
+        });
+      });
+      return true;
+    }
+
+    else {
+      //if user document does not exist,fetch all item from general course list
+      // and update user collection
+      await FirebaseFirestore.instance.collection("Admin").get().then((
+          QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((element) async {
+          count++;
+
+          await FirebaseFirestore.instance.collection(user).doc("$user$count").set(
+              element.data()).then((value) {})
+              .onError((error, stackTrace) {
+            print(error);
+          });
+        });
+      });
+      return true;
+    }
+  }
 }

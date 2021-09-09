@@ -13,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils {
 
+  //function to capture widget through its key
+  //and convert it to image as bytes
   static Future capture(GlobalKey key) async {
     if (key == null) return null;
 
@@ -24,7 +26,7 @@ class Utils {
     return pngBytes;
   }
 
-
+  //dhow a toast message
   displayToast(String message){
     Fluttertoast.showToast(
         msg: message,
@@ -37,6 +39,9 @@ class Utils {
     );
 
   }
+
+  //Function to get list of string stored in shared preferences
+  //List contains (1) Firebase UserID  (2)Username
   Future <List<String>> getBoolToSF()async{
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List <String> value = preferences.getStringList("UID");
@@ -44,7 +49,8 @@ class Utils {
 
   }
 
-
+  //Function to save list of string and store in shared preferences
+  //List contains (1) Firebase UserID  (2)Username
   addBoolToSF(_auth)async{
     List <String> list = [_auth.currentUser.uid,_auth.currentUser.displayName];
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -53,11 +59,13 @@ class Utils {
   }
 
 
-
+    //display snackback
   showInSnackBar(String text,BuildContext context){
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
+
+    //function to share image and text from app to external apps
   void shareCourse({String imageUrl,String about,BuildContext context}) async {
     showInSnackBar("Sharing Course...", context);
     final response = await get(Uri.parse(imageUrl));

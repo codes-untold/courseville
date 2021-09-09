@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:courseville/Networking/Authentication.dart';
 import 'package:courseville/Networking/CourseFetch.dart';
 import 'package:courseville/Services/Utils.dart';
 import 'package:courseville/Widgets/CourseCards.dart';
@@ -95,6 +94,6 @@ class _GridWidgetState extends State<GridWidget> {
 
   //gets user data from firebase
   Future <void> getUserData(String user)async{
-     await Authentication().getUserData(user);
+     await CourseFetch().getUserData(user);
   }
 }

@@ -43,8 +43,7 @@ class ProgressCarousel extends StatelessWidget {
 
   void generateResult(BuildContext context){
     var provider = Provider.of<Data>(context,listen: false);
-    List items = provider.updatedCourseResult;
-    print(provider.updatedCourseResult);
+    List items = provider.updatedCourseProgress;
     double counter =0;
 
     for(int i = 0; i < items.length;i++){
