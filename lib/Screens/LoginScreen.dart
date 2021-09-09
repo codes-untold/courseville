@@ -1,10 +1,11 @@
 import 'package:courseville/Networking/Authentication.dart';
 import 'package:courseville/Screens/RegistrationScreen.dart';
+import 'package:courseville/Services/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../CustomPainter.dart';
+import '../Services/CustomPainter.dart';
 import 'ForgotScreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,9 +18,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
   String password;
   String email;
-  double WIDTH =1000;
   bool loading = false;
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void toggle(){
     setState(() {
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Container(
               child: CustomPaint(
-                size: Size(WIDTH,(WIDTH*2.5).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                size: Size(Constants.customPaintWidth,(Constants.customPaintWidth*2.5).toDouble()),
                 painter: RPSCustomPainter2(),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
          Padding(
            padding: const EdgeInsets.all(20.0),
            child: Form(
-             key: _formkey,
+             key: _formKey,
              child: Column(
                children: [
                  Flexible(
@@ -239,13 +239,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
+  //handles operation when sign in button is pressed
   void login(email,password)async{
-    if(!_formkey.currentState.validate()){
+    if(!_formKey.currentState.validate()){
       return;
     }
 
-    _formkey.currentState.save();
+    _formKey.currentState.save();
     setState(() {
       loading = true;
     });
@@ -260,11 +260,3 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
 
-
-addBoolToSF(_auth)async{
-  List <String> list = [_auth.currentUser.uid,_auth.currentUser.displayName];
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  preferences.setStringList("UID", list);
-  preferences.setBool("boolvalue", true);
-
-}

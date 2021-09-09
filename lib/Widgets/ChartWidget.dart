@@ -2,6 +2,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ChartWidget extends StatelessWidget {
 
   double completedVideos;
@@ -33,7 +34,7 @@ class ChartWidget extends StatelessWidget {
     );
   }
 
-
+  //returns a list showing sections of course that are completed
   List<PieChartSectionData> showingSections() {
     return List.generate(2, (i) {
       final radius = 10.0;

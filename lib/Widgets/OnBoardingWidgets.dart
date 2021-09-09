@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class HomeWidget extends StatelessWidget {
+class OnBoardingWidget extends StatelessWidget {
 
   final imageUrl;
   final textOne;
   final textTwo;
   final imageSize;
-  HomeWidget({this.imageUrl,this.textOne,this.textTwo,this.imageSize});
+  OnBoardingWidget({this.imageUrl,this.textOne,this.textTwo,this.imageSize});
 
   @override
   Widget build(BuildContext context) {

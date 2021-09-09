@@ -1,11 +1,10 @@
 
+import 'package:flutter/material.dart';
 import 'package:courseville/Screens/SearchScreen.dart';
 import 'package:courseville/Services/Listener.dart';
+import 'package:courseville/Services/Utils.dart';
 import 'package:courseville/Widgets/GridWidget.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../Services.dart';
 
 class  HomeScreen extends StatefulWidget {
 
@@ -23,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   bool dataFetch = false;
   bool hasLoaded = false;
 
-  final ktabs = <Tab>[Tab(child: Text("All"),),Tab(child: Text("Popular"),),Tab(child: Text("Top"),),];
+  final kTabs = <Tab>[Tab(child: Text("All"),),Tab(child: Text("Popular"),),Tab(child: Text("Top"),),];
 
 
       @override
@@ -37,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     super.initState();
    userData = Provider.of<Data>(context, listen: false);
     user = userData?.userInfo?.uid;
-    tabController = TabController(length: ktabs.length, vsync: this);
-    Services().getBoolToSF().then((value) {
+    tabController = TabController(length: kTabs.length, vsync: this);
+    Utils().getBoolToSF().then((value) {
       setState(() {
         user = userData?.userInfo?.uid ?? value[0];
         userData.updateText(userData?.userInfo?.displayName ?? value[1]);
@@ -59,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       backgroundColor: Color.fromARGB(255, 69, 22, 99),
       body: SafeArea(
         child: DefaultTabController(
-          length: ktabs.length,
+          length: kTabs.length,
           child: Column(
             children: [
               Expanded(child: Container(
@@ -135,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         child: TabBar(
 
                           controller: tabController,
-                          tabs:ktabs ,
+                          tabs:kTabs ,
                           labelColor: Colors.white,
                           indicatorColor: Colors.white,
                           indicatorSize: TabBarIndicatorSize.label,

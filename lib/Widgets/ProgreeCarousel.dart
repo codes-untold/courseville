@@ -1,9 +1,11 @@
+
+import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/ProgressCard.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class ProgressCarousel extends StatelessWidget {
 
   String name;

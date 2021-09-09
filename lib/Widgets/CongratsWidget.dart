@@ -2,6 +2,7 @@
 import 'package:courseville/Widgets/CertificateScreen.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CongratsWidget extends StatelessWidget {
 
   String username;
@@ -48,8 +49,6 @@ class CongratsWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-
-
               ],
             ),
           ),

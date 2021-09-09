@@ -2,14 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CourselistTile extends StatelessWidget {
 
 
-  Map<String,dynamic> list;
+  Map<String,dynamic> map;
   int i;
   QueryDocumentSnapshot queryDocumentSnapshot;
 
-  CourselistTile({this.list,this.i,this.queryDocumentSnapshot});
+  CourselistTile({this.map,this.i,this.queryDocumentSnapshot});
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +34,14 @@ class CourselistTile extends StatelessWidget {
               placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.1,
                 color: Colors.black12,),
             ),
-            title: Text(list["videoname"],
+            title: Text(map["videoname"],
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500
             ),),
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Text(list["videotime"],
+              child: Text(map["videotime"],
               style: TextStyle(
                 fontSize: 11
               ),),

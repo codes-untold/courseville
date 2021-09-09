@@ -1,6 +1,8 @@
-import 'package:courseville/Services.dart';
-import 'package:courseville/Widgets/AppreciationWidget.dart';
+
 import 'package:flutter/material.dart';
+import 'package:courseville/Services/PaymentConstants.dart';
+import 'package:courseville/Services/Utils.dart';
+import 'package:courseville/Widgets/AppreciationWidget.dart';
 import 'package:flutterwave/core/flutterwave.dart';
 import 'package:flutterwave/flutterwave.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -13,7 +15,7 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final amountController = TextEditingController();
 
@@ -61,7 +63,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ),),
                     SizedBox(height: 30,),
                     Form(
-                      key: _formkey,
+                      key: _formKey,
                       child: Flexible(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -216,13 +218,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
                 GestureDetector(
                   onTap: (){
-                    if(this._formkey.currentState.validate()){
+                    if(this._formKey.currentState.validate()){
                       setState(() {
                         loading = true;
                       });
                       launchPayment(context);
                     }
-                   // popUpDialog(context);
                   },
                   child: Container(
                     width: double.infinity,
@@ -247,11 +248,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   void launchPayment(BuildContext context)async{
 
-     Flutterwave flutterwave = Flutterwave.forUIPayment
+     Flutterwave flutterWave = Flutterwave.forUIPayment
        (fullName: nameController.text,
      context: context,
-     publicKey: "FLWPUBK_TEST-7f782282dfb351547b3afdc7a71e7bbf-X",
-     encryptionKey: "FLWSECK_TEST64bb089f5851",
+     publicKey: PaymentConstants.PUBLIC_KEY,
+     encryptionKey: PaymentConstants.ENCRYPTION_KEY,
      email: emailController.text,
      txRef: DateTime.now().toString(),
      amount: amountController.text,
@@ -262,7 +263,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
      acceptCardPayment: true,
      acceptUSSDPayment: true);
 
-     final response = await flutterwave.initializeForUiPayments().then((value) {
+     final response = await flutterWave.initializeForUiPayments().then((value) {
        setState(() {loading = false;
        nameController.clear();
        emailController.clear();
@@ -276,10 +277,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
          popUpDialog(context);
          print(response.data.status);}
      }else{
-       Services().displayToast("Unable to complete Transaction");
+       Utils().displayToast("Unable to complete Transaction");
      }
   }
 
+  //Shows up dialog upon successful payment
   popUpDialog(BuildContext context){
     showDialog(context: context, builder: (context){
       return Dialog(

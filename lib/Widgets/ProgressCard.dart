@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'ChartWidget.dart';
 
+// ignore: must_be_immutable
 class ProgressCard extends StatelessWidget {
 
 

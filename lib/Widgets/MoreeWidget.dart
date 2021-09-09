@@ -1,8 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:courseville/Screens/AboutCourseScreen.dart';
-import 'package:courseville/Services.dart';
+
 import 'package:flutter/material.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:courseville/Screens/AboutCourseScreen.dart';
+import 'package:courseville/Services/Utils.dart';
+
+
 
 
 class MorreWidget extends StatelessWidget {
@@ -41,7 +42,7 @@ class MorreWidget extends StatelessWidget {
           ),
           GestureDetector(
             onTap: (){
-              Services().shareCourse(
+             Utils().shareCourse(
                   about: aboutCourse(queryDocumentSnapshot.data()["name"]),
                   context: context,
                   imageUrl: queryDocumentSnapshot.data()["image"]

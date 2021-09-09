@@ -33,6 +33,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     setState(() {selectedIndex = index;});
   }
 
+  //notification icon widget which gets updated upon new notification
   Widget icon(int count){
     return  IconBadge(icon: Icon(Icons.notifications),
       itemCount: count,
@@ -51,9 +52,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
         [BottomNavigationBarItem(icon: Icon(Icons.home,size: 20.0,),label: "home",backgroundColor: Colors.white),
           BottomNavigationBarItem(icon: Icon(Icons.favorite,size: 20.0,),label: "favourite"),
           BottomNavigationBarItem(icon: Consumer<Data>(builder:(context,data,_){
+
       return icon(Provider.of<Data>(context,listen: false).notificationCount);
-    }
-          ),label: "notification"),
+
+          }),label: "notification"),
           BottomNavigationBarItem(icon: Icon(Icons.person_sharp,size: 20.0,),label: "profile")],
         currentIndex: selectedIndex,
         selectedItemColor: Color(0xffa450f8),

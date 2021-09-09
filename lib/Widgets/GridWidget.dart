@@ -1,12 +1,16 @@
+
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Networking/Authentication.dart';
 import 'package:courseville/Networking/CourseFetch.dart';
-import 'package:courseville/Services.dart';
+import 'package:courseville/Services/Utils.dart';
 import 'package:courseville/Widgets/CourseCards.dart';
 import 'package:courseville/Widgets/OopsWidget.dart';
-import 'package:flutter/material.dart';
 
+
+// ignore: must_be_immutable
 class GridWidget extends StatefulWidget {
+
 String category;
 String searchTerm;
 String user;
@@ -33,7 +37,7 @@ class _GridWidgetState extends State<GridWidget> {
     super.initState();
     getUserData(widget.user).then((value) {
       fetch();
-    }).onError((error, stackTrace) => Services().displayToast("An error occured"));
+    }).onError((error, stackTrace) => Utils().displayToast("An error occured"));
 
   }
 
@@ -44,7 +48,7 @@ class _GridWidgetState extends State<GridWidget> {
           setState(() {
             list = value;
           });
-      }).onError((error, stackTrace) =>  Services().displayToast("An error occured"));
+      }).onError((error, stackTrace) =>  Utils().displayToast("An error occured"));
     }
 
     else{
@@ -55,7 +59,7 @@ class _GridWidgetState extends State<GridWidget> {
               list = value;
             });
           }
-        }).onError((error, stackTrace) =>  Services().displayToast("An error occured"));
+        }).onError((error, stackTrace) =>  Utils().displayToast("An error occured"));
         break;
 
         case "popular": CourseFetch().popularFetch(widget.user,widget.contextt).then((value){
@@ -64,7 +68,7 @@ class _GridWidgetState extends State<GridWidget> {
               list = value;
             });
           }
-        }).onError((error, stackTrace) =>  Services().displayToast("An error occured"));
+        }).onError((error, stackTrace) =>  Utils().displayToast("An error occured"));
         break;
 
         case "top": CourseFetch().topFetch(widget.user,widget.contextt).then((value){
@@ -73,7 +77,7 @@ class _GridWidgetState extends State<GridWidget> {
               list = value;
             });
           }
-        }).onError((error, stackTrace) =>  Services().displayToast("An error occured"));
+        }).onError((error, stackTrace) =>  Utils().displayToast("An error occured"));
       }
     }
 
@@ -84,12 +88,13 @@ class _GridWidgetState extends State<GridWidget> {
     return list.isEmpty?widget.searchTerm != null? OopsWidget():
     CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 69, 22, 99))): GridView.count(crossAxisCount: 2,
     children: List.generate(list.length, (index){
-      return CourseCard(querySnapshot: list[index],user: widget.user,cardindex: index,totalCards: list.length,);
+      return CourseCard(querySnapshot: list[index],user: widget.user,cardIndex: index,totalCards: list.length,);
     }),);
   }
 
 
+  //gets user data from firebase
   Future <void> getUserData(String user)async{
-     await Authentication().addUser(user);
+     await Authentication().getUserData(user);
   }
 }

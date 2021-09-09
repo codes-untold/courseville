@@ -18,7 +18,6 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
     logo3 = Image.asset("images/welcomepic3.png",gaplessPlayback: true,);  }
 
 
-
   @override
   void didChangeDependencies() {
     precacheImage(logo1.image, context);

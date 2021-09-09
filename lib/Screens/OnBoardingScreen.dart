@@ -1,11 +1,14 @@
-import 'package:courseville/Widgets/HomeWidgets.dart';
+
+import 'package:courseville/Services/Constants.dart';
 import 'package:flutter/material.dart';
+import 'package:courseville/Widgets/OnBoardingWidgets.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../CustomPainter.dart';
+import '../Services/CustomPainter.dart';
 import 'LoginScreen.dart';
 
 
+// ignore: must_be_immutable
 class WelcomeScreen extends StatelessWidget {
 
   List <Widget> item = [HomeOne(),HomeTwo(),HomeThree()];
@@ -13,7 +16,7 @@ class WelcomeScreen extends StatelessWidget {
   CarouselController buttonCarouselController = CarouselController();
   double screenHeight;
   double screenWidth;
-  double WIDTH =1000;
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class WelcomeScreen extends StatelessWidget {
           children: [
             Container(
               child: CustomPaint(
-                size: Size(WIDTH,(WIDTH*2.5).toDouble()),
+                size: Size(Constants.customPaintWidth,(Constants.customPaintWidth*2.5).toDouble()),
                 painter: RPSCustomPainter(),
                 child: Container(
                   width: screenWidth,
@@ -100,7 +103,7 @@ class WelcomeScreen extends StatelessWidget {
 class HomeOne extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return HomeWidget(
+    return OnBoardingWidget(
       imageUrl: "images/welcomepic1.png",
       textOne: "Get Courses for Free💡",
       textTwo: "Get organised list of videos from learning sites "
@@ -113,7 +116,7 @@ class HomeOne extends StatelessWidget {
 class HomeTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return HomeWidget(
+    return OnBoardingWidget(
       imageUrl: "images/welcomepic2.png",
       textOne: "Course Articles📑",
       textTwo: "Get tons of course resources which will aid you "
@@ -126,7 +129,7 @@ class HomeTwo extends StatelessWidget {
 class HomeThree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return HomeWidget(
+    return OnBoardingWidget(
       imageUrl: "images/welcomepic3.png",
       textOne: "Enjoy your Learning Journey📈",
       textTwo: "You are all set, begin your learning process with a positive attitude",

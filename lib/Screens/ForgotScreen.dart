@@ -1,11 +1,11 @@
 import 'package:courseville/Networking/Authentication.dart';
 import 'package:courseville/Screens/RegistrationScreen.dart';
+import 'package:courseville/Services/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../CustomPainter.dart';
-import 'LoginScreen.dart';
-import 'WelcomeScreen.dart';
+import '../Services/CustomPainter.dart';
+
 
 class ForgotScreen extends StatefulWidget {
 
@@ -14,13 +14,11 @@ class ForgotScreen extends StatefulWidget {
 }
 
 class _ForgotScreenState extends State<ForgotScreen> {
+
   bool loading = false;
-
   String email;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-
-  double WIDTH =1000;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +32,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
             children: [
               Container(
                 child: CustomPaint(
-                  size: Size(WIDTH,(WIDTH*2.5).toDouble()),
+                  size: Size(Constants.customPaintWidth,(Constants.customPaintWidth).toDouble()),
                   painter: RPSCustomPainter2(),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -47,7 +45,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
                 padding: const EdgeInsets.all(15.0),
                 child: Center(
                   child: Form(
-                    key:  _formkey,
+                    key:  _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -130,11 +128,11 @@ class _ForgotScreenState extends State<ForgotScreen> {
   }
 
   resetEmail(email)async{
-    if(!_formkey.currentState.validate()){
+    if(!_formKey.currentState.validate()){
       return;
     }
 
-    _formkey.currentState.save();
+    _formKey.currentState.save();
     setState(() {
       loading = true;
     });

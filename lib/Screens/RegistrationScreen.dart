@@ -1,9 +1,10 @@
-import 'package:courseville/Networking/Authentication.dart';
-import 'package:courseville/Screens/LoginScreen.dart';
+
 import 'package:flutter/material.dart';
+import 'package:courseville/Services/Constants.dart';
+import 'package:courseville/Networking/Authentication.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import '../CustomPainter.dart';
+import '../Services/CustomPainter.dart';
 
 class RegistrationScreen extends StatefulWidget {
 
@@ -13,7 +14,7 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
 
-  double WIDTH =1000;
+
   bool _obscureText1 = true;
   bool loading = false;
   String username;
@@ -21,7 +22,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String password;
   double screenHeight;
   double screenWidth;
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void togglePasswordVisibility(){
     setState(() {
@@ -48,7 +49,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           children: [
             Container(
               child: CustomPaint(
-                size: Size(WIDTH,(WIDTH*2.5).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                size: Size(Constants.customPaintWidth,(Constants.customPaintWidth*2.5).toDouble()),
                 painter: RPSCustomPainter2(),
                 child: Container(
                   width: screenWidth,
@@ -60,7 +61,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Form(
-                key: _formkey,
+                key: _formKey,
                 child: Column(
                   children: [
                     Flexible(
@@ -274,13 +275,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
 
 
-
+  //handles operation when create button is pressed
   createUser(String username,email,password)async{
-    if(!_formkey.currentState.validate()){
+    if(!_formKey.currentState.validate()){
       return;
     }
-
-    _formkey.currentState.save();
+    _formKey.currentState.save();
     setState(() {
       loading = true;
     });

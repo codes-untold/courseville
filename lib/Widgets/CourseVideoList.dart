@@ -17,7 +17,7 @@ class CourseVideoList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder( itemBuilder: (context,index){
       return VideoScreenListTile(queryDocumentSnapshot: queryDocumentSnapshot,
-        videoindex: index,user: user,courseindex: courseIndex,youtubePlayerController: youtubePlayerController,);
+        videoIndex: index,user: user,courseIndex: courseIndex,youtubePlayerController: youtubePlayerController,);
     },
     itemCount: (queryDocumentSnapshot.data()["coursevideo"] as List)?.length,
       shrinkWrap: true,

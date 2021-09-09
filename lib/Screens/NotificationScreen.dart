@@ -1,13 +1,15 @@
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:courseville/Services/Listener.dart';
-import 'package:courseville/Widgets/NotificationTile.dart';
+import 'package:courseville/Services/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:courseville/Services/Listener.dart';
+import 'package:courseville/Services/Utils.dart';
+import 'package:courseville/Widgets/NotificationTile.dart';
 import 'package:provider/provider.dart';
 
-import '../Services.dart';
+
 
 class NotificationScreen extends StatefulWidget {
 
@@ -16,10 +18,11 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
+
   Data provider;
   List<Map<String,dynamic>> list = [];
   List <Widget> listTile = [];
-  String user;
+  String userID;
 
 
   @override
@@ -34,9 +37,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
       list[i].update("HasReadNotification", (value) =>true);
     }
 
-    Services().getBoolToSF().then((value) {
-      user = value[0];
-     updateNotification();
+    Utils().getBoolToSF().then((value) {
+      userID = value[0];
+     hasReadAllNotifications();
       });
 
 
@@ -74,13 +77,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
 
-  void updateNotification(){
+
+  //updates notification document on firebase to
+  // show user has read all notifications
+  void hasReadAllNotifications(){
    List notificationIds =  provider.notificationIDs;
 
    for(int i = 0; i< list.length; i++){
-        FirebaseFirestore.instance.collection(user).doc("Notifications").
-        collection("Notifications").doc(notificationIds[i]).set(list[i]);
-       print(notificationIds[i]);
+        FirebaseFirestore.instance.collection(userID).doc(Constants.NOTIFICATIONS).
+        collection(Constants.NOTIFICATIONS).doc(notificationIds[i]).set(list[i]);
       }
 
   }

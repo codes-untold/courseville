@@ -1,12 +1,12 @@
 
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Screens/NavigationScreen.dart';
 import 'package:courseville/Services/Listener.dart';
-import 'package:flutter/material.dart';
+import 'package:courseville/Services/Utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Services.dart';
-import 'WelcomeScreen.dart';
+import 'OnBoardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -66,25 +66,17 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  Future <bool> getBoolToSF()async{
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    bool boolvalue = preferences.getBool("boolvalue")?? false;
-    return boolvalue;
-
-  }
-
-
+  //checks if user has logged into app before
   void checkForUser(){
-    getBoolToSF().then((value)async{
-      if(value){
-        Services().getBoolToSF().then((value)async {
-          print(value);
-            user = value[0];
-         await checkForNotifications(user).then((value){
-           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-             return NavigationScreen();
-           }));
-         }).onError((error, stackTrace) =>Services().displayToast("Please check Internet connection"));
+    Utils().getBoolToSF().then((value)async{
+      if(value != null){
+        Utils().getBoolToSF().then((value)async {
+          user = value[0];
+          await checkForNotifications(user).then((value){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+              return NavigationScreen();
+            }));
+          }).onError((error, stackTrace) =>Utils().displayToast("Please check Internet connection"));
         });
       }
       else{
@@ -96,6 +88,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   }
 
+
+  //Checks for unread notifications
   Future <void> checkForNotifications(String user)async{
 
     await FirebaseFirestore.instance.collection(user).doc("Notifications").

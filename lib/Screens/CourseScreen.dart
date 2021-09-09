@@ -1,16 +1,19 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:courseville/Constants.dart';
 import 'package:courseville/Screens/CourseIntro.dart';
+import 'package:courseville/Services/Constants.dart';
 import 'package:courseville/Services/Listener.dart';
+import 'package:courseville/Services/Utils.dart';
 import 'package:courseville/Widgets/CourseListTile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../Services.dart';
 
 
+
+// ignore: must_be_immutable
 class CourseScreen extends StatefulWidget {
+
   QueryDocumentSnapshot queryDocumentSnapshot;
   String user;
   int courseScreenIndex;
@@ -23,7 +26,7 @@ class CourseScreen extends StatefulWidget {
 }
 
 class _CourseScreenState extends State<CourseScreen> {
-  double WIDTH = 200;
+
   List <Widget> list = [];
   Color color;
   var providerData;
@@ -33,9 +36,9 @@ class _CourseScreenState extends State<CourseScreen> {
   void initState() {
     super.initState();
 
-    for(Map<String,dynamic> lister in (widget.queryDocumentSnapshot.data()["coursevideo"] as List)){
+    for(Map<String,dynamic> lister in (widget.queryDocumentSnapshot.data()[Constants.COURSE_VIDEO] as List)){
       int i = 0;
-      list?.add(CourselistTile(i: i,list: lister,queryDocumentSnapshot: widget.queryDocumentSnapshot,));
+      list?.add(CourselistTile(i: i,map: lister,queryDocumentSnapshot: widget.queryDocumentSnapshot,));
       i++;
     }
 
@@ -61,10 +64,10 @@ class _CourseScreenState extends State<CourseScreen> {
               children: [
                 Container(
                   child: Hero(
-                    tag: widget.queryDocumentSnapshot.data()["name"],
+                    tag: widget.queryDocumentSnapshot.data()[Constants.COURSE_NAME],
                     child: CachedNetworkImage(
                       width: 250,
-                      imageUrl: widget.queryDocumentSnapshot.data()["image"],
+                      imageUrl: widget.queryDocumentSnapshot.data()[Constants.COURSE_IMAGE],
                       placeholder: (context,url) => Icon(Icons.auto_stories,size: MediaQuery.of(context).size.width *0.3,
                         color: Colors.black12,),
                     ),
@@ -79,8 +82,8 @@ class _CourseScreenState extends State<CourseScreen> {
                     children: [
                       Row(
                         children: [
-                          Text(widget.queryDocumentSnapshot.data()["author"] != null ?
-                         "By ${widget.queryDocumentSnapshot.data()["author"]}": "By Anonymous",
+                          Text(widget.queryDocumentSnapshot.data()[Constants.COURSE_AUTHOR] != null ?
+                         "By ${widget.queryDocumentSnapshot.data()[Constants.COURSE_AUTHOR]}": "By Anonymous",
                             style: TextStyle(
                               // color: Colors.white
                             ),),
@@ -99,7 +102,7 @@ class _CourseScreenState extends State<CourseScreen> {
                         ],
                       ),
                       SizedBox(height: 5,),
-                      Text(widget.queryDocumentSnapshot.data()["name"],
+                      Text(widget.queryDocumentSnapshot.data()[Constants.COURSE_NAME],
                           style: Constants.courseTextstyle2),
                       SizedBox(height: 5,),
                       Row(
@@ -131,7 +134,7 @@ class _CourseScreenState extends State<CourseScreen> {
 
                       SizedBox(height: 12,),
 
-                      Text(widget.queryDocumentSnapshot.data()["description"],
+                      Text(widget.queryDocumentSnapshot.data()[Constants.COURSE_DESCRIPTION],
                         style: Constants.courseTextstyle4,),
                       SizedBox(height: 25,),
 
@@ -154,7 +157,7 @@ class _CourseScreenState extends State<CourseScreen> {
                           Navigator.push(context, MaterialPageRoute(builder: (context){
                             return CourseIntro(
                               queryDocumentSnapshot: widget.queryDocumentSnapshot,
-                              courseindex: widget.courseScreenIndex,
+                              courseIndex: widget.courseScreenIndex,
                               user: widget.user,
                             );
                           }));
@@ -190,21 +193,7 @@ class _CourseScreenState extends State<CourseScreen> {
      child: Consumer<Data>(
        builder: (context,data,_){
          return FloatingActionButton(
-           onPressed: ()async{
-             if(data.favourite[widget.courseScreenIndex]){
-               color = Colors.white;
-               data.UpdateFavouriteList(widget.courseScreenIndex, false);
-               Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Removed from Favourites•☹️",context);
-               await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).update({"favourite": false});
-             }
-
-             else{
-               color = Colors.amber;
-               data.UpdateFavouriteList(widget.courseScreenIndex, true);
-               Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Added to Favourites😀",context);
-               await FirebaseFirestore.instance.collection(widget.user).doc((widget.queryDocumentSnapshot.id)).update({"favourite": true});
-             }
-           },
+           onPressed: (){ clickFavourite(context, data);},
            backgroundColor: Color.fromARGB(255, 69, 22, 99),
            child: Icon(Icons.favorite,
              color: color,),
@@ -215,27 +204,20 @@ class _CourseScreenState extends State<CourseScreen> {
    ), );
   }
 
-  clickFavourite(BuildContext context ) async{
-    if ( color == Colors.white) {
-      setState(() {
-        color = Colors.amber;
-      });
-
-      Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Added to Favourites😀",context);
-      await FirebaseFirestore.instance.collection(widget.user).doc((widget.queryDocumentSnapshot.id)).update({"favourite": true});
+  //Handles operation when floating action button is clicked
+  clickFavourite(BuildContext context ,Data data) async{
+    if(data.favourite[widget.courseScreenIndex]){
+      color = Colors.white;
+      data.UpdateFavouriteList(widget.courseScreenIndex, false);
+      Utils().showInSnackBar("${widget.queryDocumentSnapshot.data()[Constants.COURSE_NAME]} Removed from Favourites•☹️",context);
+      await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).update({"favourite": false});
     }
 
-    else {
-      setState(() {
-        color = Colors.white;
-      });
-
-      Services().showInSnackBar("${widget.queryDocumentSnapshot.data()["name"]} Removed from Favourites•☹️",context);
-
-      await FirebaseFirestore.instance.collection(
-          widget.user).doc(
-          widget.queryDocumentSnapshot.id
-      ).update({"favourite": false});
+    else{
+      color = Colors.amber;
+      data.UpdateFavouriteList(widget.courseScreenIndex, true);
+      Utils().showInSnackBar("${widget.queryDocumentSnapshot.data()[Constants.COURSE_NAME]} Added to Favourites😀",context);
+      await FirebaseFirestore.instance.collection(widget.user).doc((widget.queryDocumentSnapshot.id)).update({"favourite": true});
     }
   }
 }

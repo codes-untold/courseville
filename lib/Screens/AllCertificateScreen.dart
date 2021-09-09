@@ -1,17 +1,14 @@
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Services/Utils.dart';
 import 'package:courseville/Widgets/Certificate.dart';
 import 'package:courseville/Widgets/WidgetToImage.dart';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-
-import '../Services.dart';
 
 class AllCertificateScreen extends StatefulWidget {
 
@@ -22,6 +19,7 @@ class AllCertificateScreen extends StatefulWidget {
 }
 
 class _AllCertificateScreenState extends State<AllCertificateScreen> {
+
   PageController _pageController;
   int prevPage;
   String user;
@@ -30,7 +28,6 @@ class _AllCertificateScreenState extends State<AllCertificateScreen> {
   int courseIndex = 0;
   GlobalKey key1;
   Uint8List bytes1;
-  Services services = Services();
   double screenHeight,screenWidth;
 
 
@@ -198,8 +195,8 @@ class _AllCertificateScreenState extends State<AllCertificateScreen> {
     new Directory(documentDirectory.path).create(recursive: true).then((Directory directory) async{
       File file = await new File("${directory.path}/${ provider.completedCourses[courseIndex]["coursename"]}.jpg").create(recursive: true);
       await file.writeAsBytes(bytes1).then((value) {
-        services.displayToast("Saved to ${directory.path}/");
-      }).onError((error, stackTrace){ services.displayToast("An error occured");});
+        Utils().displayToast("Saved to ${directory.path}/");
+      }).onError((error, stackTrace){ Utils().displayToast("An error occured");});
 
     });
 

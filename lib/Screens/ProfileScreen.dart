@@ -1,14 +1,16 @@
 
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
+
 import 'package:courseville/Networking/Authentication.dart';
 import 'package:courseville/Screens/AllCertificateScreen.dart';
 import 'package:courseville/Screens/PaymentScreen.dart';
-import 'package:courseville/Services.dart';
 import 'package:courseville/Services/Listener.dart';
+import 'package:courseville/Services/Utils.dart';
 import 'package:courseville/Widgets/ProfileCard.dart';
 import 'package:courseville/Widgets/ProgreeCarousel.dart';
 import 'package:courseville/Widgets/ProgressCard.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'AboutAppScreen.dart';
@@ -21,16 +23,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
   bool hasStartedCourse;
-
   Data provider;
-
   int noOfCompletedCourses;
-
   String username;
-
   double screenHeight,screenWidth;
-
   bool loading = false;
 
   @override
@@ -40,8 +38,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     hasStartedCourse =  provider.updatedCourseResult.isEmpty;
     noOfCompletedCourses = provider.completedCourses.length;
     username = provider.username;
-
-
   }
 
   @override
@@ -80,6 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                              fontSize: 14
                            ),),
                            SizedBox(height: screenHeight * 0.0265,),
+
                            hasStartedCourse?ProgressCard(hasStarted: hasStartedCourse,):ProgressCarousel(hasStarted: hasStartedCourse,)
 
                          ],
@@ -95,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                        ProfileCard(text1: "images/certificateimage.png",text2: "Certificates",function: (){
                          if(noOfCompletedCourses<1){
-                           Services().displayToast("You have no certificate Yet");
+                           Utils().displayToast("You have no certificate Yet");
                            return;
                          }
                          Navigator.push(context, MaterialPageRoute(builder: (context){

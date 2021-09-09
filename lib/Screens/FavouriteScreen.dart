@@ -1,16 +1,15 @@
 
-import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:courseville/Services/Listener.dart';
-import 'package:courseville/Widgets/CourseCards.dart';
-import 'package:courseville/Widgets/FavouriteCard.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:courseville/Services/Constants.dart';
+import 'package:courseville/Services/CustomPainter.dart';
+import 'package:courseville/Services/Listener.dart';
+import 'package:courseville/Services/Utils.dart';
+import 'package:courseville/Widgets/FavouriteCard.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:provider/provider.dart';
 
-import '../CustomPainter.dart';
-import '../Services.dart';
+
 
 class FavouriteScreen extends StatefulWidget {
   @override
@@ -20,13 +19,12 @@ class FavouriteScreen extends StatefulWidget {
 class _FavouriteScreenState extends State<FavouriteScreen> {
   Data provider;
   String user;
-  double WIDTH = 200;
 
   @override
   void initState() {
     super.initState();
     provider = Provider.of<Data>(context,listen: false);
-    Services().getBoolToSF().then((value) {
+    Utils().getBoolToSF().then((value) {
       setState(() {
         user = value[0];
       });
@@ -42,7 +40,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               children: [
                 Container(
                   child: CustomPaint(
-                    size: Size(WIDTH,(WIDTH*2.5).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                    size: Size(Constants.customPaintWidth,(Constants.customPaintWidth*2.5).toDouble()),
                     painter: RPSCustomPainter2(),
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -57,25 +55,21 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     initialLoader: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 69, 22, 99)))),
                       emptyDisplay:Center(child: Text("You have no Favourites yet!")),
                       onError: (e){
-                        Services().displayToast("An error occured");
+                        Utils().displayToast("An error occured");
                         return null;
                       },
                       itemsPerPage: 1,
                       itemBuilderType: PaginateBuilderType.listView,
-                      itemBuilder: (index,context,documentsnapshot){
-
-
+                      itemBuilder: (index,context,documentSnapshot){
                           return Column(
                             children: [
-                              FavouriteCard(queryDocumentSnapshot: documentsnapshot,index: index,user: user,),
+                              FavouriteCard(queryDocumentSnapshot: documentSnapshot,index: index,user: user,),
                               SizedBox(
                                 height: 10,
                               ) ],
                           );
-
-
                       },
-                      query: FirebaseFirestore.instance.collection(user).where("favourite",isEqualTo: true)
+                      query: FirebaseFirestore.instance.collection(user).where(Constants.COURSE_FAVOURITE,isEqualTo: true)
                   ),
                 ), ],
             )

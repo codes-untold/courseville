@@ -91,7 +91,6 @@ class RPSCustomPainter extends CustomPainter{
 
     canvas.drawPath(path_0, paint_0);
 
-//Color.fromARGB(255, 69, 22, 99)
   }
 
   @override
