@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:courseville/Services/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,14 +19,14 @@ class Data extends ChangeNotifier{
   String searchTerm;
   List <bool> favourite= [];
   int videoID =0;
-  List isCourseComplete = [];
-  List generalList = [];
-  int notificationCount = 0;                                          //a Counter for number of unread notifications
-  List<Map<String,dynamic>> updatedCourseProgress = [];              //List of updated course progress for all courses
-  List<Map<String,dynamic>> completedCourses = [];                 //List of completed courses as maps
-  List<Map<String,dynamic>> notifications = [];                    //List of Notifications as maps from Firebase
-  List <String> notificationIDs = [];                             //List of notificationIDs from firebase
-  List <String> startedCourseNames = [];                          //List of courses which the user has started
+  List courseVideoList = [];                                 //List of course video data one for each course
+  List generalList = [];                                      //List of all course documents from as querydocumentsnapshots
+  int notificationCount = 0;                                  //a Counter for number of unread notifications
+  List<Map<String,dynamic>> updatedCourseProgress = [];       //List of updated course progress for all courses
+  List<Map<String,dynamic>> completedCourses = [];           //List of completed courses as maps
+  List<Map<String,dynamic>> notifications = [];              //List of Notifications as maps from Firebase
+  List <String> notificationIDs = [];                        //List of notificationIDs from firebase
+  List <String> startedCourseNames = [];                     //List of courses which the user has started
 
 
 
@@ -35,77 +36,103 @@ class Data extends ChangeNotifier{
     notifyListeners();
   }
 
-
+  //Adds a new course name to the list when user
+  //starts the course
   void updateStartedCourseNames(String name){
     startedCourseNames.add(name);
     notifyListeners();
   }
 
+  //Loops through list of querysnapshots and gets only the names
+  //of courses that have been started by user
   void getStartedCourseNames(List <QueryDocumentSnapshot> list){
     for(int i = 0; i < list.length;i++){
-      if(list[i].data()["hasStartedCourse"]){
-        startedCourseNames.add(list[i].data()["name"]);
+      if(list[i].data()[Constants.COURSE_HAS_STARTED_COURSE]){
+        startedCourseNames.add(list[i].data()[Constants.COURSE_NAME]);
       }
     }
 
     notifyListeners();
   }
 
-
+    //Increment the notification counter when there
+   //is a new notification
   void incrementNotificationCount(){
     notificationCount++;
     notifyListeners();
     print(notificationCount);
   }
 
+  //Reset notification counter when user reads
+  // all notifications
   void resetNotificationCount(){
     notificationCount = 0;
     notifyListeners();
   }
 
-  void updateUser(User user){
+  //Get firebase user and assigns it to "userinfo"
+  //when logging into app
+  void getFirebaseUser(User user){
     userInfo = user;
     notifyListeners();
   }
 
+  //Get list of booleans for each course showing if course
+  //is marked as favourite or not
   void addFavouriteList(List fav){
     favourite = fav;
     notifyListeners();
 
   }
 
-  void UpdateFavouriteList(int index,bool value){
+  //updates the list of favourites when user adds or
+  //removes a course from favourites
+  void updateFavouriteList(int index,bool value){
     favourite[index] = value;
     notifyListeners();
   }
 
+  //Update the video of a course video when user clicks on a
+  //new video
   void updateCurrentVideoID(int value){
     videoID = value;
     notifyListeners();
 
   }
 
-  void addCourseBoolState(List list){
-    isCourseComplete = list;
+  //gets the "coursevideo" field for each course
+  // and assigns it to variable courseVideoList
+  void getCourseVideoList(List list){
+    courseVideoList = list;
     notifyListeners();
   }
 
-  void updateCourseBoolState(List list,int index){
-    isCourseComplete[index] = list;
+
+  //updates the coursevideolist when user marks any course as complete
+  //or unmarks any course
+  void updateCourseVideoListData(List list,int index){
+    courseVideoList [index] = list;
     notifyListeners();
   }
 
 
-  void addCourseResult(String name,String image,int length){
+  //adds a map  to variable "updatedCourseProgress"
+  //when user begins a course
+
+  //The "courseprogress" key of the map is updated
+  //when user marks or unmarks a course video
+  void addCourseProgress(String name,String image,int length){
     updatedCourseProgress.add({
       "coursename": name,
       "courseimage": image,
-      "courseprogress": fillBoolState(length)
+      "courseprogress": setCourseVideoToFalse(length)
     });
     notifyListeners();
 
   }
 
+  //Adds a map to variable "completed courses" when
+  //user completely finishes a course
   void addCertificates(String name){
     for(int i = 0;i < updatedCourseProgress.length;i++){
       if(updatedCourseProgress[i].containsValue(name)){
@@ -116,7 +143,9 @@ class Data extends ChangeNotifier{
     notifyListeners();
   }
 
-  void updateCourseResult(String name,List <bool> list){
+  //Updates variable "updatedCourseProgress" when user
+  //marks or unmarks a course video
+  void updateCourseProgress(String name,List <bool> list){
 
     for(int i = 0;i < updatedCourseProgress.length;i++){
       if(updatedCourseProgress[i].containsValue(name)){
@@ -124,22 +153,22 @@ class Data extends ChangeNotifier{
       }
     }
     notifyListeners();
-
   }
 
-  void addCompletedCourses(QueryDocumentSnapshot queryDocumentSnapshot){
-
+  //Adds new maps to the variable "completed courses" as user completes
+  //more courses
+  void updateCompletedCoursesList(QueryDocumentSnapshot queryDocumentSnapshot){
     if(completedCourses.isEmpty){
       completedCourses.add({
-      "coursename": queryDocumentSnapshot.data()["name"],
-      "courseimage": queryDocumentSnapshot.data()["image"],
-      "courseprogress": queryDocumentSnapshot.data()["coursevideo"]
+      "coursename": queryDocumentSnapshot.data()[Constants.COURSE_NAME],
+      "courseimage": queryDocumentSnapshot.data()[Constants.COURSE_IMAGE],
+      "courseprogress": queryDocumentSnapshot.data()[Constants.COURSE_VIDEO_DATA]
       });
     }
 
     else{
       for(int i = 0;i < updatedCourseProgress.length;i++){
-        if(updatedCourseProgress[i].containsValue(queryDocumentSnapshot.data()["name"])){
+        if(updatedCourseProgress[i].containsValue(queryDocumentSnapshot.data()[Constants.COURSE_NAME])){
           completedCourses.add(updatedCourseProgress[i]);
         }
       }
@@ -147,7 +176,9 @@ class Data extends ChangeNotifier{
     notifyListeners();
   }
 
-  List <bool> fillBoolState(int length){
+  //Sets all course videos as false (unmarked) when user starts
+  // a course
+  List <bool> setCourseVideoToFalse(int length){
     List <bool> _list = [];
     for(int i = 0;i < length;i++){
       _list.add(false);   //Creates course with initial video progress all set to false
@@ -155,22 +186,26 @@ class Data extends ChangeNotifier{
     return _list;
   }
 
-  List <bool> loopBoolList(List list){
-    List<bool> sth = [];
+
+  //creates a list and assigns all the "incomplete" fields
+  //of maps to the list
+  List <bool> loopThroughBoolList(List list){
+    List<bool> boolList = [];
     for(int i = 0;i < list.length; i++ ){
-      sth.add(list[i]["iscomplete"]);
+      boolList.add(list[i]["iscomplete"]);
     }
-    return sth;
+    return boolList;
   }
 
+  //Adds started courses to variable updatedCourseProgress
   void getResults(List <QueryDocumentSnapshot> list){
     if(updatedCourseProgress.isEmpty){
       for(int i = 0; i < list.length;i++){
-        if(list[i].data()["hasStartedCourse"]){
+        if(list[i].data()[Constants.COURSE_HAS_STARTED_COURSE]){
           updatedCourseProgress.add({
-            "coursename": list[i].data()["name"],
-            "courseimage": list[i].data()["image"],
-            "courseprogress": loopBoolList(list[i].data()["coursevideo"])
+            "coursename": list[i].data()[Constants.COURSE_NAME],
+            "courseimage": list[i].data()[Constants.COURSE_IMAGE],
+            "courseprogress": loopThroughBoolList(list[i].data()[Constants.COURSE_VIDEO_DATA])
           });
         }
       }
@@ -178,13 +213,14 @@ class Data extends ChangeNotifier{
     notifyListeners();
   }
 
+  //Adds completed courses courses to variable "completed courses"
   void getCompletedCourses(List <QueryDocumentSnapshot> list){
       for(int i = 0; i < list.length;i++){
         if(list[i].data()["hasEndedCourse"]){
           completedCourses.add({
             "coursename": list[i].data()["name"],
             "courseimage": list[i].data()["image"],
-            "courseprogress": loopBoolList(list[i].data()["coursevideo"])
+            "courseprogress": loopThroughBoolList(list[i].data()["coursevideo"])
           });
         }
       }
@@ -192,11 +228,16 @@ class Data extends ChangeNotifier{
     notifyListeners();
   }
 
+
+  //gets the notification messages and assigns them to
+  //variable "notifications"
   void getNotifications(Map<String,dynamic> map){
     notifications.insert(0, map);
     notifyListeners();
   }
 
+  //gets the user document ID of the notification messages and
+  // assigns them to variable "notificationIDs"
   void getNotificationIDs(String value){
     notificationIDs.insert(0, value);
     notifyListeners();

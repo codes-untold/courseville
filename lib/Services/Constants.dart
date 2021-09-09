@@ -29,9 +29,11 @@ class Constants{
 
   static const String COURSE_FAVOURITE = "favourite";
 
-  static const String COURSE_VIDEO = "coursevideo";
+  static const String COURSE_VIDEO_DATA = "coursevideo";
 
   static const String COURSE_HAS_STARTED_COURSE = "hasStartedCourse";
+
+  static const String COURSE_HAS_ENDED_COURSE = "hasStartedCourse";
 
   static const String NOTIFICATIONS = "Notifications";
 

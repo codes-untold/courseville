@@ -66,10 +66,17 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  //checks if user has logged into app before
+  Future <bool> getBoolToSF()async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    bool boolvalue = preferences.getBool("boolvalue")?? false;
+    return boolvalue;
+
+  }
+
+
   void checkForUser(){
-    Utils().getBoolToSF().then((value)async{
-      if(value != null){
+    Utils().isUserLoggedIn().then((value)async{
+      if(value){
         Utils().getBoolToSF().then((value)async {
           user = value[0];
           await checkForNotifications(user).then((value){

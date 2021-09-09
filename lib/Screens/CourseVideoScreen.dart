@@ -54,7 +54,7 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
   Widget build(BuildContext context) {
 
     youtubePlayerController = YoutubePlayerController(initialVideoId:
-    documentData[Constants.COURSE_VIDEO][provider.videoID]["videoid"],
+    documentData[Constants.COURSE_VIDEO_DATA][provider.videoID]["videoid"],
 
         flags: YoutubePlayerFlags(autoPlay: false, forceHD: true))..addListener(() {
           if(_isPlayerReady == true){
@@ -87,7 +87,7 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
                 child: Consumer<Data>(
                   builder: (context,data,_){
                       youtubePlayerController.load(
-                       documentData[Constants.COURSE_VIDEO][data.videoID]["videoid"],
+                       documentData[Constants.COURSE_VIDEO_DATA][data.videoID]["videoid"],
                       );
                     return YoutubePlayer(
                       onReady: (){
@@ -175,8 +175,8 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
         if(!provider.startedCourseNames.contains(documentData[Constants.COURSE_NAME])){
 
           //creates a list to show course progress
-          provider.addCourseResult(documentData[Constants.COURSE_NAME], documentData[Constants.COURSE_IMAGE],
-              (documentData[Constants.COURSE_VIDEO] as List).length);
+          provider.addCourseProgress(documentData[Constants.COURSE_NAME], documentData[Constants.COURSE_IMAGE],
+              (documentData[Constants.COURSE_VIDEO_DATA] as List).length);
 
           await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
           update({Constants.COURSE_HAS_STARTED_COURSE: true}).then((value){

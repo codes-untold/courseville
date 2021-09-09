@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:courseville/Services/Constants.dart';
 import 'package:courseville/Services/Listener.dart';
 import 'package:courseville/Widgets/CongratsWidget.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
     documentData = widget.queryDocumentSnapshot.data();
     list = documentData["coursevideo"];
     list2 = documentData ["coursevideo"];
-    List <dynamic> map = provider.isCourseComplete[widget.courseIndex];
+    List <dynamic> map = provider.courseVideoList[widget.courseIndex];
     isComplete = map[widget.videoIndex]["iscomplete"];
 
   }
@@ -122,8 +123,11 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
     int totalCompletionCount = 0;
     for(int i = 0;i < courseContentList.length;i++){
       updatedCourseProgress.add(courseContentList[i]["iscomplete"]);
-      if(courseContentList[i]["iscomplete"]){ //check for number of videos that are marked as complete
-        totalCompletionCount++;              //increment totalCompletionCount for each completed video
+
+      //check for number of videos that are marked as complete
+      //increment totalCompletionCount for each completed video
+      if(courseContentList[i]["iscomplete"]){
+        totalCompletionCount++;
       }
     }
 
@@ -135,9 +139,9 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
 
       //Check if user has completed course previously to avoid recording
       //as complete multiple times
-      if(!documentData["hasEndedCourse"]) {
+      if(!documentData[Constants.COURSE_HAS_ENDED_COURSE]) {
         updateCourseCompletion();
-        provider.addCompletedCourses(widget.queryDocumentSnapshot);
+        provider.updateCompletedCoursesList(widget.queryDocumentSnapshot);
       }
       Future.delayed(Duration(seconds: 2),(){
         widget.youtubePlayerController.pause();
@@ -167,8 +171,8 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
   //Creates a notification message and sends to firebase
   // notifies provider class about completion of course
   void updateCourseCompletion()async{
-    Map<String,dynamic> courseNotification =  {"NotificationImage": documentData["image"],
-      "NotificationMessage":"Great Job ${provider.username}, you just completed the course on ${documentData["name"]}",
+    Map<String,dynamic> courseNotification =  {"NotificationImage": documentData[Constants.COURSE_IMAGE],
+      "NotificationMessage":"Great Job ${provider.username}, you just completed the course on ${documentData[Constants.COURSE_NAME]}",
       "NotificationName":DateTime.now().millisecondsSinceEpoch.toString(),
       "HasReadNotification": false};
 
@@ -177,8 +181,9 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
 
       await FirebaseFirestore.instance.collection(widget.user).doc("Notifications").collection("Notifications").doc(
           "${widget.queryDocumentSnapshot.id}complete").set(
-          {"NotificationImage": documentData["image"],
-            "NotificationMessage":"Good job ${provider.username}!, You have successfully completed the course on ${documentData["name"]}",
+          {"NotificationImage": documentData[Constants.COURSE_IMAGE],
+            "NotificationMessage":"Good job ${provider.username}!, "
+                "You have successfully completed the course on ${documentData[Constants.COURSE_NAME]}",
             "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),
             "HasReadNotification": false}).then((value) {
 
@@ -233,11 +238,11 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
       list.insert(widget.videoIndex, courseContent);
     }
 
-    provider.updateCourseResult(documentData["name"], notifyCourseProgress(list));
+    provider.updateCourseProgress(documentData["name"], notifyCourseProgress(list));
 
     await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).
     update({"coursevideo": list}).then((value){
-      provider.updateCourseBoolState(list, widget.courseIndex);
+      provider.updateCourseVideoListData(list, widget.courseIndex);
     });
   }
 }

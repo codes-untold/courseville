@@ -49,6 +49,15 @@ class Utils {
 
   }
 
+  //gets from sharedpreference the value of "boolvalue"
+  //to ascertain if user is already logged in
+  Future <bool> isUserLoggedIn()async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    bool boolValue = preferences.getBool("boolvalue")?? false;
+    return boolValue;
+
+  }
+
   //Function to save list of string and store in shared preferences
   //List contains (1) Firebase UserID  (2)Username
   addBoolToSF(_auth)async{

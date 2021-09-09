@@ -36,7 +36,7 @@ class _CourseScreenState extends State<CourseScreen> {
   void initState() {
     super.initState();
 
-    for(Map<String,dynamic> lister in (widget.queryDocumentSnapshot.data()[Constants.COURSE_VIDEO] as List)){
+    for(Map<String,dynamic> lister in (widget.queryDocumentSnapshot.data()[Constants.COURSE_VIDEO_DATA] as List)){
       int i = 0;
       list?.add(CourselistTile(i: i,map: lister,queryDocumentSnapshot: widget.queryDocumentSnapshot,));
       i++;
@@ -208,14 +208,14 @@ class _CourseScreenState extends State<CourseScreen> {
   clickFavourite(BuildContext context ,Data data) async{
     if(data.favourite[widget.courseScreenIndex]){
       color = Colors.white;
-      data.UpdateFavouriteList(widget.courseScreenIndex, false);
+      data.updateFavouriteList(widget.courseScreenIndex, false);
       Utils().showInSnackBar("${widget.queryDocumentSnapshot.data()[Constants.COURSE_NAME]} Removed from Favourites•☹️",context);
       await FirebaseFirestore.instance.collection(widget.user).doc(widget.queryDocumentSnapshot.id).update({"favourite": false});
     }
 
     else{
       color = Colors.amber;
-      data.UpdateFavouriteList(widget.courseScreenIndex, true);
+      data.updateFavouriteList(widget.courseScreenIndex, true);
       Utils().showInSnackBar("${widget.queryDocumentSnapshot.data()[Constants.COURSE_NAME]} Added to Favourites😀",context);
       await FirebaseFirestore.instance.collection(widget.user).doc((widget.queryDocumentSnapshot.id)).update({"favourite": true});
     }

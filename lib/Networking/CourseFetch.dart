@@ -1,3 +1,4 @@
+import 'package:courseville/Services/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseville/Services/Listener.dart';
@@ -10,17 +11,20 @@ class CourseFetch{
   List <Map<String,dynamic>> searchList = [];
   List <QueryDocumentSnapshot> listOfDocuments  = [];
   List <bool> favList = [];
-  List boolList = [];
+  List courseVideoList = [];
   List courseNames = [];
   List courseImages = [];
 
+
+  //fetches all course documents from user's collection on Cloud FireStore
+  // and returns a list of querysnapshotdocuments
   Future <List <QueryDocumentSnapshot>> generalFetch(String user,BuildContext context)async{
       var value =   Provider.of<Data>(context,listen: false);
     await FirebaseFirestore.instance.collection(user).get().then((querySnapshot){
-     boolList.clear();
+      courseVideoList.clear();
 
      querySnapshot.docs.forEach((element) {
-       if(element.data()["name"]!= null){
+       if(element.data()[Constants.COURSE_NAME]!= null){
          getData(element);
        }
 
@@ -31,6 +35,9 @@ class CourseFetch{
 
   }
 
+
+  //fetches course documents from user collection on Cloud FireStore
+  // where category is = popular and returns a list
   Future <List <QueryDocumentSnapshot>> popularFetch(String user,BuildContext context)async{
     var value =   Provider.of<Data>(context,listen: false);
     await FirebaseFirestore.instance.collection(user).where("category",isEqualTo: "popular").get().then((querySnapshot){
@@ -43,6 +50,9 @@ class CourseFetch{
     return listOfDocuments;   //fetching and returning list of courses in Popular category
   }
 
+
+  //fetches course documents from user collection on Cloud FireStore
+  // where category is = Top and returns a list
   Future <List <QueryDocumentSnapshot>> topFetch(String user,BuildContext context)async{
     var value =   Provider.of<Data>(context,listen: false);
     await FirebaseFirestore.instance.collection(user).where("category",isEqualTo: "Top").get().then((querySnapshot){
@@ -56,29 +66,30 @@ class CourseFetch{
     return listOfDocuments;   //fetching and returning list of courses in Top category
   }
 
-  Future <List <QueryDocumentSnapshot>> searchFetch(String user,String search,BuildContext context)async{
 
+
+  Future <List <QueryDocumentSnapshot>> searchFetch(String user,String search,BuildContext context)async{
     await FirebaseFirestore.instance.collection(user).get().then((querySnapshot){
       var value =   Provider.of<Data>(context,listen: false);
       querySnapshot.docs.forEach((element) {
-        if(element.data()["name"]!= null){
+        if(element.data()[Constants.COURSE_NAME]!= null){
           listOfDocuments .add(element);
         }
 
       });
 
       listOfDocuments .removeWhere((element) {
-       String data = (element.data()["name"]);
+       String data = (element.data()[Constants.COURSE_NAME]);
 
        if(!(data.toLowerCase().contains(search.toLowerCase())))
          {
            return true;
          }
        else{
-         favList.add(element.data()["favourite"]);
-         boolList.add(element.data()["coursevideo"]);
-         courseNames.add(element.data()["name"]);
-         courseImages.add(element.data()["image"]);
+         favList.add(element.data()[Constants.COURSE_FAVOURITE]);
+         courseVideoList.add(element.data()[Constants.COURSE_VIDEO_DATA]);
+         courseNames.add(element.data()[Constants.COURSE_NAME]);
+         courseImages.add(element.data()[Constants.COURSE_IMAGE]);
 
          return false;
        }
@@ -90,10 +101,10 @@ class CourseFetch{
 //fetching course data and assigning them to different lists - CourseNames,CourseImages,Favourites e.t.c
   void getData(QueryDocumentSnapshot element){
     listOfDocuments.add(element);
-    favList.add(element.data()["favourite"]);
-    boolList.add(element.data()["coursevideo"]);
-    courseNames.add(element.data()["name"]);
-    courseImages.add(element.data()["image"]);
+    favList.add(element.data()[Constants.COURSE_FAVOURITE]);
+    courseVideoList.add(element.data()[Constants.COURSE_VIDEO_DATA]);
+    courseNames.add(element.data()[Constants.COURSE_NAME]);
+    courseImages.add(element.data()[Constants.COURSE_IMAGE]);
 
 
   }
@@ -101,7 +112,7 @@ class CourseFetch{
   //Sending all fetched data to the provider class
   void sendDataToProvider(Data value){
     value.addFavouriteList(favList);
-    value.addCourseBoolState(boolList);
+    value.getCourseVideoList(courseVideoList);
     value.getResults(listOfDocuments );
     value.getCompletedCourses(listOfDocuments);
     value.getStartedCourseNames(listOfDocuments);
@@ -114,9 +125,9 @@ class CourseFetch{
   Future <bool> getUserData(String user) async {
     Map<String, dynamic> map;
     int count= 0;
-    var res = await FirebaseFirestore.instance.doc("$user/${user}1").get();
+    var userDocument = await FirebaseFirestore.instance.doc("$user/${user}1").get();
 
-    if (res.exists) {
+    if (userDocument.exists) {
       //if user document already exists, fetch documents from general list of courses
       //to add new courses to exisiting user's collection
       await FirebaseFirestore.instance.collection("Admin").get().then((
@@ -124,10 +135,10 @@ class CourseFetch{
         querySnapshot.docs.forEach((element) async {
           map = element.data();
           //Remove user specific fields to avoid overiding fields in user documents
-          map.removeWhere((key, value) => key == "favourite");
-          map.removeWhere((key, value) => key == "coursevideo");
-          map.removeWhere((key, value) => key == "hasStartedCourse");
-          map.removeWhere((key, value) => key == "hasEndedCourse");
+          map.removeWhere((key, value) => key == Constants.COURSE_FAVOURITE);
+          map.removeWhere((key, value) => key == Constants.COURSE_VIDEO_DATA);
+          map.removeWhere((key, value) => key == Constants.COURSE_HAS_STARTED_COURSE);
+          map.removeWhere((key, value) => key == Constants.COURSE_HAS_ENDED_COURSE);
 
 
 

@@ -62,7 +62,7 @@ class Authentication{
           if(newUser != null) {
             if (newUser.user.emailVerified) {
               Utils().addBoolToSF(_auth);
-              Provider.of<Data>(context,listen: false).updateUser(_auth.currentUser);
+              Provider.of<Data>(context,listen: false).getFirebaseUser(_auth.currentUser);
               checkForNotifications(_auth.currentUser.uid, context).then((value) {
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
                   return NavigationScreen();
