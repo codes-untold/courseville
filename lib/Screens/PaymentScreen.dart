@@ -248,6 +248,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   void launchPayment(BuildContext context)async{
 
+
      Flutterwave flutterWave = Flutterwave.forUIPayment
        (fullName: nameController.text,
      context: context,
@@ -295,3 +296,4 @@ class _PaymentScreenState extends State<PaymentScreen> {
     });
   }
 }
+
