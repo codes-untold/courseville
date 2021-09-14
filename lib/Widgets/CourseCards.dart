@@ -1,4 +1,5 @@
 
+import 'package:courseville/Services/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -105,15 +106,15 @@ class _CourseCardState extends State<CourseCard> {
                              ),),
                          ],
                        ),
-                   GestureDetector(
-                     onTap: updateFavouriteIcon,
-                     child: Consumer<Data>(
-                       builder:(context,data,child){
-                         return Icon(!(data.favourite.length < widget.totalCards)?
-                         data.favourite[widget.cardIndex]? Icons.favorite_rounded: Icons.favorite_border_rounded:Icons.favorite_border_rounded,
-                             color: Color(0xffa450f8));
-                       },
-                     ),
+                   Consumer<Data>(
+                     builder:(context,data,child){
+                       return GestureDetector(
+                         onTap: (){updateFavouriteIcon(context, data);},
+                         child: Icon(!(data.favourite.length < widget.totalCards)?
+                             data.favourite[widget.cardIndex]? Icons.favorite_rounded: Icons.favorite_border_rounded:Icons.favorite_border_rounded,
+                                 color: Color(0xffa450f8))
+                       );
+                     },
                    ),
                  ],
                    ),
@@ -126,17 +127,17 @@ class _CourseCardState extends State<CourseCard> {
 
 
   //handles operation when favourite button is clicked
-  void updateFavouriteIcon()async{
+  void updateFavouriteIcon(BuildContext context ,Data data)async{
 
-    if (providerData.favourite[widget.cardIndex] == false) {
-      providerData.UpdateFavouriteList(widget.cardIndex, true);
-      Utils().showInSnackBar("${widget.querySnapshot.data()["name"]} Added to Favourites😀",context);
+    if (data.favourite[widget.cardIndex] == false) {
+      data.updateFavouriteList(widget.cardIndex, true);
+      Utils().showInSnackBar("${widget.querySnapshot.data()[Constants.COURSE_NAME]} Added to Favourites😀",context);
       await FirebaseFirestore.instance.collection(widget.user).doc((widget.querySnapshot.id)).update({"favourite": true});
     }
 
     else {
-     providerData.UpdateFavouriteList(widget.cardIndex, false);
-     Utils().showInSnackBar("${widget.querySnapshot.data()["name"]} Removed from Favourites•☹",context);
+      data.updateFavouriteList(widget.cardIndex, false);
+     Utils().showInSnackBar("${widget.querySnapshot.data()[Constants.COURSE_NAME]} Removed from Favourites•☹",context);
       await FirebaseFirestore.instance.collection(widget.user).doc(widget.querySnapshot.id).update({"favourite": false});
     }
   }

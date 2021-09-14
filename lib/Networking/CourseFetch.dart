@@ -125,6 +125,7 @@ class CourseFetch{
   Future <bool> getUserData(String user) async {
     Map<String, dynamic> map;
     int count= 0;
+
     var userDocument = await FirebaseFirestore.instance.doc("$user/${user}1").get();
 
     if (userDocument.exists) {
