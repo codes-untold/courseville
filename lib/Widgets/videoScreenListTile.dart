@@ -78,10 +78,8 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
             trailing: PopupMenuButton(
             itemBuilder: (BuildContext context)=> _popUpMenuItems,
               onSelected: (String value)async{
-
               popMenuButtonChange(value);
               updateCourseProgress(value);
-
               },
 
             ),
@@ -232,7 +230,6 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
       list.removeAt(widget.videoIndex);
       list.add(courseContent);
     }
-
     else{
       list.removeAt(widget.videoIndex);
       list.insert(widget.videoIndex, courseContent);

@@ -33,7 +33,7 @@ class Constants{
 
   static const String COURSE_HAS_STARTED_COURSE = "hasStartedCourse";
 
-  static const String COURSE_HAS_ENDED_COURSE = "hasStartedCourse";
+  static const String COURSE_HAS_ENDED_COURSE = "hasEndedCourse";
 
   static const String NOTIFICATIONS = "Notifications";
 
