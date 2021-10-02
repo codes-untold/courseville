@@ -112,7 +112,7 @@ class _CourseScreenState extends State<CourseScreen> {
                               Icons.favorite,
                               color: Colors.amber,
                             ),
-                            Text("2.1k",
+                            Text(widget.queryDocumentSnapshot.data()[Constants.COURSE_FAVOURITE_COUNT],
                               style: Constants.courseTextstyle,)
                           ],),
 
@@ -122,7 +122,7 @@ class _CourseScreenState extends State<CourseScreen> {
                               Icons.star,
                               color: Colors.amber,
                             ),
-                            Text("4.8",
+                            Text(widget.queryDocumentSnapshot.data()[Constants.COURSE_RATING_COUNT],
                               style: Constants.courseTextstyle,
                             )
                           ],),
