@@ -22,7 +22,7 @@ class ProgressCard extends StatelessWidget {
       color: Color.fromARGB(255, 69, 22, 99),
       child: Container(
         width: double.infinity,
-        height: 200,
+        height: 175,
         child: hasStarted? Center(child:
         Text("You have no Courses yet",style: TextStyle(
           color: Colors.white,
