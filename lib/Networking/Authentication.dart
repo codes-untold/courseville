@@ -129,7 +129,7 @@ class Authentication{
     await users.doc("Notifications").collection("Notifications").doc().set(
         {"NotificationImage":null,
           "NotificationMessage":"Hey $username, welcome to courseville😀...We have tons of amazing"
-              "and insightful courses in store fo you. Best of luck in your study journey!",
+              " and insightful courses in store for you. Best of luck in your study journey!",
           "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),
           "HasReadNotification": false});
        }

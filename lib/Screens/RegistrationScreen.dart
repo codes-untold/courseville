@@ -90,6 +90,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               borderRadius: BorderRadius.circular(20),
                               child: TextFormField(
                                 validator: (value){
+
+                                  if(value.length> 10){
+                                    return "Username max 10 letters";
+                                  }
                                   if(value.isEmpty){
                                     return "Username is Required";
                                   }
