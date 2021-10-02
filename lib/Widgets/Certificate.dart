@@ -19,7 +19,7 @@ class Certificate extends StatelessWidget {
         Positioned(child: Text(username,style: TextStyle(
             fontSize: 18
         ),),
-          top: MediaQuery.of(context).size.height * 0.159,),
+          top: MediaQuery.of(context).size.width * 0.36,),
 
         Positioned(child: ConstrainedBox(
             constraints: BoxConstraints.tightFor(width: 200),
@@ -28,7 +28,7 @@ class Certificate extends StatelessWidget {
                   fontSize: 11
               ),
               textAlign: TextAlign.center,)),
-          top: MediaQuery.of(context).size.height * 0.239,)
+          top: MediaQuery.of(context).size.width * 0.47,)
       ],);
   }
 }
