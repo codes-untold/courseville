@@ -170,7 +170,7 @@ class _VideoScreenListTileState extends State<VideoScreenListTile> {
   // notifies provider class about completion of course
   void updateCourseCompletion()async{
     Map<String,dynamic> courseNotification =  {"NotificationImage": documentData[Constants.COURSE_IMAGE],
-      "NotificationMessage":"Great Job ${provider.username}, you just completed the course on ${documentData[Constants.COURSE_NAME]}",
+      "NotificationMessage":"Great Job ${provider.username}, you have successfully completed the course on ${documentData[Constants.COURSE_NAME]}",
       "NotificationName":DateTime.now().millisecondsSinceEpoch.toString(),
       "HasReadNotification": false};
 

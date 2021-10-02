@@ -56,7 +56,7 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
     youtubePlayerController = YoutubePlayerController(initialVideoId:
     documentData[Constants.COURSE_VIDEO_DATA][provider.videoID]["videoid"],
 
-        flags: YoutubePlayerFlags(autoPlay: false, forceHD: true))..addListener(() {
+        flags: YoutubePlayerFlags(autoPlay: true, forceHD: true))..addListener(() {
           if(_isPlayerReady == true){
            playerState =  youtubePlayerController.value.playerState;
           }
@@ -167,7 +167,7 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
 
     //create notification message
     Map<String,dynamic> courseNotification =  {"NotificationImage":documentData[Constants.COURSE_IMAGE],
-      "NotificationMessage":"Hey ${provider.username}, you just started the course on ${documentData[Constants.COURSE_NAME]}",
+      "NotificationMessage":"That's very a great step ${provider.username}, you just commenced the course on ${documentData[Constants.COURSE_NAME]}",
       "NotificationName":DateTime.now().millisecondsSinceEpoch.toString(),
       "HasReadNotification": false};
 
@@ -186,7 +186,7 @@ class _CourseVideoScreenState extends State<CourseVideoScreen> {
         await FirebaseFirestore.instance.collection(widget.user).doc(Constants.NOTIFICATIONS).collection(Constants.NOTIFICATIONS).doc(
             widget.queryDocumentSnapshot.id).set(
             {"NotificationImage": documentData[Constants.COURSE_IMAGE],
-              "NotificationMessage":"Hey ${provider.username}, You just Started the course on ${documentData[Constants.COURSE_NAME]}",
+              "NotificationMessage":"That's very a great step ${provider.username}, You just commenced the course on ${documentData[Constants.COURSE_NAME]}",
               "NotificationName": DateTime.now().millisecondsSinceEpoch.toString(),
               "HasReadNotification": false}).then((value) {
 
